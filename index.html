@@ -3,48 +3,120 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Game Hub</title>
+<title>Game Hub Pro</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f0f1a;
+        font-family: "Inter", sans-serif;
         color: white;
-        display: flex;
         height: 100vh;
+        display: flex;
         overflow: hidden;
+
+        background: linear-gradient(-45deg, #0f0f1a, #111827, #0b1020, #1a1033);
+        background-size: 400% 400%;
+        animation: gradientMove 12s ease infinite;
+    }
+
+    @keyframes gradientMove {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
     }
 
     .sidebar {
-        width: 280px;
-        background: rgba(255,255,255,0.05);
-        backdrop-filter: blur(10px);
-        padding: 15px;
-        overflow-y: auto;
+        width: 300px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        background: rgba(255,255,255,0.06);
+        backdrop-filter: blur(14px);
         border-right: 1px solid rgba(255,255,255,0.1);
     }
 
     .title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
+        font-size: 22px;
+        font-weight: 700;
         text-align: center;
+        letter-spacing: 1px;
+        background: linear-gradient(90deg, #7c3aed, #22d3ee);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .search {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: rgba(255,255,255,0.08);
+        color: white;
+        transition: 0.2s;
+    }
+
+    .search:focus {
+        background: rgba(255,255,255,0.15);
+    }
+
+    #gameList {
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 5px;
     }
 
     .game {
-        padding: 10px;
-        margin-bottom: 10px;
-        background: rgba(255,255,255,0.08);
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 14px;
         cursor: pointer;
-        transition: 0.2s;
-        text-align: center;
+
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.08);
+
+        transition: 0.25s;
+        position: relative;
+        overflow: hidden;
     }
 
     .game:hover {
-        background: rgba(255,255,255,0.15);
-        transform: scale(1.03);
+        transform: translateY(-3px) scale(1.02);
+        background: rgba(255,255,255,0.12);
+        border-color: rgba(124,58,237,0.5);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    .game::before {
+        content: "";
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(circle, rgba(124,58,237,0.4), transparent 70%);
+        top: -40px;
+        right: -40px;
+        transform: rotate(25deg);
+    }
+
+    .game-title {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .tag {
+        font-size: 11px;
+        opacity: 0.7;
+        margin-top: 4px;
     }
 
     .main {
@@ -54,25 +126,35 @@
     }
 
     .bar {
-        padding: 10px;
-        background: rgba(255,255,255,0.05);
-        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding: 12px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hint {
+        font-size: 12px;
+        opacity: 0.7;
     }
 
     .btn {
-        background: #6c5ce7;
+        padding: 8px 14px;
         border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        color: white;
+        border-radius: 10px;
         cursor: pointer;
+        color: white;
+
+        background: linear-gradient(135deg, #7c3aed, #22d3ee);
+        transition: 0.2s;
     }
 
     .btn:hover {
-        background: #8c7ae6;
+        transform: scale(1.05);
+        filter: brightness(1.1);
     }
 
     iframe {
@@ -81,41 +163,57 @@
         border: none;
         background: black;
     }
-
-    .hint {
-        font-size: 12px;
-        opacity: 0.7;
-    }
 </style>
 </head>
 
 <body>
 
 <div class="sidebar">
-    <div class="title">Game Hub</div>
+    <div class="title">⚡ Game Hub Pro</div>
+    <input class="search" id="search" placeholder="Search games..." />
+
     <div id="gameList"></div>
 </div>
 
 <div class="main">
     <div class="bar">
-        <div class="hint">Click a game to load it here</div>
+        <div class="hint">Select a game to launch instantly</div>
         <button class="btn" onclick="goHome()">Home</button>
     </div>
 
-    <iframe id="frame" src=""></iframe>
+    <iframe id="frame"></iframe>
 </div>
 
 <script>
-/* 🔥 YOUR GAMES (FIXED) */
 const games = [
-    { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/" },
-    { name: "Run 3", url: "https://lekug.github.io/tn6pS9dCf37xAhkJv/" },
-    { name: "Veck.io", url: "https://veck.io/" },
-    { name: "Hole.io", url: "https://holeio.com/" }
+    { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/", tag: "Racing ❄️" },
+    { name: "Run 3", url: "https://lekug.github.io/tn6pS9dCf37xAhkJv/", tag: "Runner 🏃" },
+    { name: "Veck.io", url: "https://veck.io/", tag: "Multiplayer 🌐" },
+    { name: "Hole.io", url: "https://holeio.com/", tag: "Arcade ⚫" }
 ];
 
 const list = document.getElementById("gameList");
 const frame = document.getElementById("frame");
+const search = document.getElementById("search");
+
+function renderGames(filter = "") {
+    list.innerHTML = "";
+
+    games
+        .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(game => {
+            const div = document.createElement("div");
+            div.className = "game";
+
+            div.innerHTML = `
+                <div class="game-title">${game.name}</div>
+                <div class="tag">${game.tag}</div>
+            `;
+
+            div.onclick = () => loadGame(game.url);
+            list.appendChild(div);
+        });
+}
 
 function loadGame(url) {
     frame.src = url;
@@ -125,13 +223,11 @@ function goHome() {
     frame.src = "";
 }
 
-games.forEach(game => {
-    const div = document.createElement("div");
-    div.className = "game";
-    div.innerText = game.name;
-    div.onclick = () => loadGame(game.url);
-    list.appendChild(div);
+search.addEventListener("input", (e) => {
+    renderGames(e.target.value);
 });
+
+renderGames();
 </script>
 
 </body>
