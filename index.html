@@ -10,9 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
         margin: 0;
@@ -21,16 +19,22 @@
         height: 100vh;
         display: flex;
         overflow: hidden;
-
-        background: linear-gradient(-45deg, #0f0f1a, #111827, #0b1020, #1a1033);
-        background-size: 400% 400%;
-        animation: gradientMove 12s ease infinite;
+        background: #0b1020;
     }
 
-    @keyframes gradientMove {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
+    /* ⭐ CONSTELLATION CANVAS */
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+
+    .sidebar, .main {
+        position: relative;
+        z-index: 2;
     }
 
     .sidebar {
@@ -49,24 +53,18 @@
         font-size: 22px;
         font-weight: 700;
         text-align: center;
-        letter-spacing: 1px;
         background: linear-gradient(90deg, #7c3aed, #22d3ee);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
     .search {
-        padding: 10px 12px;
+        padding: 10px;
         border-radius: 10px;
         border: none;
         outline: none;
         background: rgba(255,255,255,0.08);
         color: white;
-        transition: 0.2s;
-    }
-
-    .search:focus {
-        background: rgba(255,255,255,0.15);
     }
 
     #gameList {
@@ -74,50 +72,24 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        padding-right: 5px;
     }
 
     .game {
         padding: 12px;
         border-radius: 14px;
         cursor: pointer;
-
         background: rgba(255,255,255,0.07);
         border: 1px solid rgba(255,255,255,0.08);
-
-        transition: 0.25s;
-        position: relative;
-        overflow: hidden;
+        transition: 0.2s;
     }
 
     .game:hover {
-        transform: translateY(-3px) scale(1.02);
+        transform: translateY(-3px);
         background: rgba(255,255,255,0.12);
-        border-color: rgba(124,58,237,0.5);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
 
-    .game::before {
-        content: "";
-        position: absolute;
-        width: 120px;
-        height: 120px;
-        background: radial-gradient(circle, rgba(124,58,237,0.4), transparent 70%);
-        top: -40px;
-        right: -40px;
-        transform: rotate(25deg);
-    }
-
-    .game-title {
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    .tag {
-        font-size: 11px;
-        opacity: 0.7;
-        margin-top: 4px;
-    }
+    .game-title { font-weight: 600; font-size: 14px; }
+    .tag { font-size: 11px; opacity: 0.7; }
 
     .main {
         flex: 1;
@@ -126,19 +98,13 @@
     }
 
     .bar {
-        padding: 12px 16px;
+        padding: 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-
         background: rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .hint {
-        font-size: 12px;
-        opacity: 0.7;
     }
 
     .btn {
@@ -147,14 +113,7 @@
         border-radius: 10px;
         cursor: pointer;
         color: white;
-
         background: linear-gradient(135deg, #7c3aed, #22d3ee);
-        transition: 0.2s;
-    }
-
-    .btn:hover {
-        transform: scale(1.05);
-        filter: brightness(1.1);
     }
 
     iframe {
@@ -168,19 +127,20 @@
 
 <body>
 
+<!-- ⭐ CONSTELLATION BACKGROUND -->
+<canvas id="stars"></canvas>
+
 <div class="sidebar">
     <div class="title">⚡ Game Hub Pro</div>
     <input class="search" id="search" placeholder="Search games..." />
-
     <div id="gameList"></div>
 </div>
 
 <div class="main">
     <div class="bar">
-        <div class="hint">Select a game to launch instantly</div>
+        <div>Click a game to play</div>
         <button class="btn" onclick="goHome()">Home</button>
     </div>
-
     <iframe id="frame"></iframe>
 </div>
 
@@ -198,36 +158,125 @@ const search = document.getElementById("search");
 
 function renderGames(filter = "") {
     list.innerHTML = "";
-
     games
-        .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(game => {
-            const div = document.createElement("div");
-            div.className = "game";
-
-            div.innerHTML = `
-                <div class="game-title">${game.name}</div>
-                <div class="tag">${game.tag}</div>
-            `;
-
-            div.onclick = () => loadGame(game.url);
-            list.appendChild(div);
-        });
-}
-
-function loadGame(url) {
-    frame.src = url;
+    .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(game => {
+        const div = document.createElement("div");
+        div.className = "game";
+        div.innerHTML = `<div class="game-title">${game.name}</div><div class="tag">${game.tag}</div>`;
+        div.onclick = () => frame.src = game.url;
+        list.appendChild(div);
+    });
 }
 
 function goHome() {
     frame.src = "";
 }
 
-search.addEventListener("input", (e) => {
-    renderGames(e.target.value);
+search.addEventListener("input", e => renderGames(e.target.value));
+renderGames();
+
+/* =========================
+   ⭐ CONSTELLATION EFFECT
+========================= */
+
+const canvas = document.getElementById("stars");
+const ctx = canvas.getContext("2d");
+
+let w, h;
+let particles = [];
+const mouse = { x: null, y: null };
+
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+window.addEventListener("mousemove", e => {
+    mouse.x = e.x;
+    mouse.y = e.y;
 });
 
-renderGames();
+class Particle {
+    constructor() {
+        this.x = Math.random() * w;
+        this.y = Math.random() * h;
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6;
+        this.size = 2;
+    }
+
+    move() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > w) this.vx *= -1;
+        if (this.y < 0 || this.y > h) this.vy *= -1;
+
+        // mouse attraction
+        if (mouse.x && mouse.y) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < 120) {
+                this.x -= dx * 0.01;
+                this.y -= dy * 0.01;
+            }
+        }
+    }
+
+    draw() {
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function initParticles(count = 90) {
+    particles = [];
+    for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+    }
+}
+
+function connect() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i; j < particles.length; j++) {
+            let dx = particles[i].x - particles[j].x;
+            let dy = particles[i].y - particles[j].y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < 120) {
+                ctx.strokeStyle = `rgba(124,58,237,${1 - dist/120})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, w, h);
+
+    particles.forEach(p => {
+        p.move();
+        p.draw();
+    });
+
+    connect();
+    requestAnimationFrame(animate);
+}
+
+initParticles();
+animate();
 </script>
 
 </body>
