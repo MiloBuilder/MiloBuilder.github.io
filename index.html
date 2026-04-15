@@ -16,7 +16,6 @@
         overflow: hidden;
     }
 
-    /* LEFT SIDEBAR */
     .sidebar {
         width: 280px;
         background: rgba(255,255,255,0.05);
@@ -48,7 +47,6 @@
         transform: scale(1.03);
     }
 
-    /* MAIN VIEW */
     .main {
         flex: 1;
         display: flex;
@@ -94,7 +92,7 @@
 <body>
 
 <div class="sidebar">
-    <div class="title">🎮 Game Hub</div>
+    <div class="title">Game Hub</div>
     <div id="gameList"></div>
 </div>
 
@@ -108,12 +106,12 @@
 </div>
 
 <script>
-/* 🔥 PUT YOUR GAMES HERE */
+/* 🔥 YOUR GAMES (FIXED) */
 const games = [
     { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/" },
     { name: "Run 3", url: "https://lekug.github.io/tn6pS9dCf37xAhkJv/" },
-    { name: "Veck.io", url: "https://veck.io/" }
-    { name: "Hole.io", url: "https://holeio.com/"}
+    { name: "Veck.io", url: "https://veck.io/" },
+    { name: "Hole.io", url: "https://holeio.com/" }
 ];
 
 const list = document.getElementById("gameList");
