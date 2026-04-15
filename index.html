@@ -3,167 +3,136 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Game Launcher</title>
+<title>Game Hub</title>
 
 <style>
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
-        color: #fff;
-    }
-
-    header {
-        padding: 20px;
-        text-align: center;
-        font-size: 26px;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    .container {
-        max-width: 900px;
-        margin: auto;
-        padding: 20px;
-    }
-
-    .add-box {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    input {
-        flex: 1;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-    }
-
-    button {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        background: #6c5ce7;
+        background: #0f0f1a;
         color: white;
-        transition: 0.2s;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
     }
 
-    button:hover {
-        background: #8c7ae6;
-        transform: scale(1.05);
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-    }
-
-    .card {
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.1);
+    /* LEFT SIDEBAR */
+    .sidebar {
+        width: 280px;
+        background: rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
-        border-radius: 12px;
         padding: 15px;
+        overflow-y: auto;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .game {
+        padding: 10px;
+        margin-bottom: 10px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+        text-align: center;
+    }
+
+    .game:hover {
+        background: rgba(255,255,255,0.15);
+        transform: scale(1.03);
+    }
+
+    /* MAIN VIEW */
+    .main {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        transition: 0.2s;
     }
 
-    .card:hover {
-        transform: translateY(-5px);
-        background: rgba(255,255,255,0.12);
+    .bar {
+        padding: 10px;
+        background: rgba(255,255,255,0.05);
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .card-title {
-        font-weight: bold;
-        word-break: break-word;
+    .btn {
+        background: #6c5ce7;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
     }
 
-    .card button {
+    .btn:hover {
+        background: #8c7ae6;
+    }
+
+    iframe {
+        flex: 1;
         width: 100%;
+        border: none;
+        background: black;
     }
 
-    .delete {
-        background: #e74c3c;
-    }
-
-    .delete:hover {
-        background: #ff6b6b;
+    .hint {
+        font-size: 12px;
+        opacity: 0.7;
     }
 </style>
 </head>
 
 <body>
 
-<header>🎮 My Game Launcher</header>
+<div class="sidebar">
+    <div class="title">🎮 Game Hub</div>
+    <div id="gameList"></div>
+</div>
 
-<div class="container">
-
-    <div class="add-box">
-        <input id="name" placeholder="Game name..." />
-        <input id="url" placeholder="Game link (https://...)" />
-        <button onclick="addGame()">Add</button>
+<div class="main">
+    <div class="bar">
+        <div class="hint">Click a game to load it here</div>
+        <button class="btn" onclick="goHome()">Home</button>
     </div>
 
-    <div class="grid" id="gameGrid"></div>
-
+    <iframe id="frame" src=""></iframe>
 </div>
 
 <script>
-let games = JSON.parse(localStorage.getItem("games")) || [];
+/* 🔥 PUT YOUR GAMES HERE */
+const games = [
+    { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/" },
+    { name: "Example Game 2", url: "https://example.org" },
+    { name: "Example Game 3", url: "https://example.net" }
+];
 
-function save() {
-    localStorage.setItem("games", JSON.stringify(games));
+const list = document.getElementById("gameList");
+const frame = document.getElementById("frame");
+
+function loadGame(url) {
+    frame.src = url;
 }
 
-function addGame() {
-    const name = document.getElementById("name").value.trim();
-    const url = document.getElementById("url").value.trim();
-
-    if (!name || !url) return;
-
-    games.push({ name, url });
-    save();
-    render();
-
-    document.getElementById("name").value = "";
-    document.getElementById("url").value = "";
+function goHome() {
+    frame.src = "";
 }
 
-function openGame(url) {
-    window.open(url, "_blank");
-}
-
-function deleteGame(index) {
-    games.splice(index, 1);
-    save();
-    render();
-}
-
-function render() {
-    const grid = document.getElementById("gameGrid");
-    grid.innerHTML = "";
-
-    games.forEach((game, index) => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        card.innerHTML = `
-            <div class="card-title">${game.name}</div>
-            <button onclick="openGame('${game.url}')">Play</button>
-            <button class="delete" onclick="deleteGame(${index})">Delete</button>
-        `;
-
-        grid.appendChild(card);
-    });
-}
-
-render();
+games.forEach(game => {
+    const div = document.createElement("div");
+    div.className = "game";
+    div.innerText = game.name;
+    div.onclick = () => loadGame(game.url);
+    list.appendChild(div);
+});
 </script>
 
 </body>
