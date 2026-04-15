@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Game Hub Pro</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -15,20 +13,17 @@
     body {
         margin: 0;
         font-family: "Inter", sans-serif;
-        color: white;
         height: 100vh;
         display: flex;
         overflow: hidden;
-        background: #0b1020;
+        background: radial-gradient(circle at top, #111827, #05070f);
+        color: white;
     }
 
     /* ⭐ CONSTELLATION CANVAS */
     canvas {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        inset: 0;
         z-index: 0;
     }
 
@@ -45,7 +40,7 @@
         gap: 10px;
 
         background: rgba(255,255,255,0.06);
-        backdrop-filter: blur(14px);
+        backdrop-filter: blur(16px);
         border-right: 1px solid rgba(255,255,255,0.1);
     }
 
@@ -86,6 +81,7 @@
     .game:hover {
         transform: translateY(-3px);
         background: rgba(255,255,255,0.12);
+        box-shadow: 0 0 20px rgba(124,58,237,0.3);
     }
 
     .game-title { font-weight: 600; font-size: 14px; }
@@ -102,6 +98,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+
         background: rgba(255,255,255,0.05);
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -122,25 +119,38 @@
         border: none;
         background: black;
     }
+
+    /* ⭐ CREDITS */
+    .credits {
+        font-size: 11px;
+        opacity: 0.6;
+        text-align: center;
+        margin-top: auto;
+        padding-top: 10px;
+    }
 </style>
 </head>
 
 <body>
 
-<!-- ⭐ CONSTELLATION BACKGROUND -->
 <canvas id="stars"></canvas>
 
 <div class="sidebar">
     <div class="title">⚡ Game Hub Pro</div>
+
     <input class="search" id="search" placeholder="Search games..." />
+
     <div id="gameList"></div>
+
+    <div class="credits">Made by Milo Builder</div>
 </div>
 
 <div class="main">
     <div class="bar">
-        <div>Click a game to play</div>
+        <div>✨ Select a game to play</div>
         <button class="btn" onclick="goHome()">Home</button>
     </div>
+
     <iframe id="frame"></iframe>
 </div>
 
@@ -159,14 +169,17 @@ const search = document.getElementById("search");
 function renderGames(filter = "") {
     list.innerHTML = "";
     games
-    .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(game => {
-        const div = document.createElement("div");
-        div.className = "game";
-        div.innerHTML = `<div class="game-title">${game.name}</div><div class="tag">${game.tag}</div>`;
-        div.onclick = () => frame.src = game.url;
-        list.appendChild(div);
-    });
+        .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(game => {
+            const div = document.createElement("div");
+            div.className = "game";
+            div.innerHTML = `
+                <div class="game-title">${game.name}</div>
+                <div class="tag">${game.tag}</div>
+            `;
+            div.onclick = () => frame.src = game.url;
+            list.appendChild(div);
+        });
 }
 
 function goHome() {
@@ -177,7 +190,7 @@ search.addEventListener("input", e => renderGames(e.target.value));
 renderGames();
 
 /* =========================
-   ⭐ CONSTELLATION EFFECT
+   ⭐ CONSTELLATION SYSTEM (FIXED + BRIGHT)
 ========================= */
 
 const canvas = document.getElementById("stars");
@@ -191,7 +204,6 @@ function resize() {
     w = canvas.width = window.innerWidth;
     h = canvas.height = window.innerHeight;
 }
-
 window.addEventListener("resize", resize);
 resize();
 
@@ -204,9 +216,9 @@ class Particle {
     constructor() {
         this.x = Math.random() * w;
         this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.6;
-        this.vy = (Math.random() - 0.5) * 0.6;
-        this.size = 2;
+        this.vx = (Math.random() - 0.5) * 0.8;
+        this.vy = (Math.random() - 0.5) * 0.8;
+        this.size = 2.2;
     }
 
     move() {
@@ -216,32 +228,36 @@ class Particle {
         if (this.x < 0 || this.x > w) this.vx *= -1;
         if (this.y < 0 || this.y > h) this.vy *= -1;
 
-        // mouse attraction
+        // stronger mouse pull
         if (mouse.x && mouse.y) {
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
             let dist = Math.sqrt(dx*dx + dy*dy);
 
-            if (dist < 120) {
-                this.x -= dx * 0.01;
-                this.y -= dy * 0.01;
+            if (dist < 160) {
+                this.x += dx * 0.02;
+                this.y += dy * 0.02;
             }
         }
     }
 
     draw() {
-        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        // glow
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#7c3aed";
+
+        ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
+
+        ctx.shadowBlur = 0;
     }
 }
 
-function initParticles(count = 90) {
+function init(n = 80) {
     particles = [];
-    for (let i = 0; i < count; i++) {
-        particles.push(new Particle());
-    }
+    for (let i = 0; i < n; i++) particles.push(new Particle());
 }
 
 function connect() {
@@ -251,8 +267,8 @@ function connect() {
             let dy = particles[i].y - particles[j].y;
             let dist = Math.sqrt(dx*dx + dy*dy);
 
-            if (dist < 120) {
-                ctx.strokeStyle = `rgba(124,58,237,${1 - dist/120})`;
+            if (dist < 140) {
+                ctx.strokeStyle = `rgba(34,211,238,${1 - dist/140})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
@@ -275,7 +291,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-initParticles();
+init();
 animate();
 </script>
 
