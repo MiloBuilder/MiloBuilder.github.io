@@ -20,7 +20,9 @@ body {
     color: white;
 }
 
-/* ⭐ CONSTELLATION */
+html { scroll-behavior: smooth; }
+
+/* 🌌 CONSTELLATION */
 canvas {
     position: fixed;
     inset: 0;
@@ -28,25 +30,18 @@ canvas {
     pointer-events: none;
     transition: opacity 0.4s ease;
 }
+canvas.hidden { opacity: 0; }
 
-canvas.hidden {
-    opacity: 0;
-}
-
-/* UI */
-.sidebar, .main {
-    position: relative;
-    z-index: 2;
-}
-
+/* SIDEBAR */
 .sidebar {
     width: 300px;
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+
     background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -68,22 +63,30 @@ canvas.hidden {
     color: white;
 }
 
+/* SCROLLBAR */
 #gameList {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding-right: 5px;
 }
+#gameList::-webkit-scrollbar { width: 8px; }
+#gameList::-webkit-scrollbar-thumb {
+    background: linear-gradient(#7c3aed, #22d3ee);
+    border-radius: 10px;
+}
+#gameList { scrollbar-width: thin; scrollbar-color: #7c3aed transparent; }
 
+/* GAME */
 .game {
     padding: 12px;
     border-radius: 14px;
     cursor: pointer;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.2s;
+    transition: 0.25s;
 }
-
 .game:hover {
     transform: translateY(-3px);
     background: rgba(255,255,255,0.12);
@@ -92,6 +95,7 @@ canvas.hidden {
 .game-title { font-weight: 600; font-size: 14px; }
 .tag { font-size: 11px; opacity: 0.7; }
 
+/* MAIN */
 .main {
     flex: 1;
     display: flex;
@@ -104,7 +108,6 @@ canvas.hidden {
     justify-content: space-between;
     align-items: center;
     background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
@@ -124,12 +127,20 @@ iframe {
     background: black;
 }
 
+.homeMsg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 22px;
+    opacity: 0.6;
+}
+
 .credits {
     font-size: 11px;
     opacity: 0.6;
     text-align: center;
     margin-top: auto;
-    padding-top: 10px;
 }
 </style>
 </head>
@@ -140,11 +151,8 @@ iframe {
 
 <div class="sidebar">
     <div class="title">❄️ Milo's Gaming Hub</div>
-
     <input class="search" id="search" placeholder="Search games..." />
-
     <div id="gameList"></div>
-
     <div class="credits">Made by Milo Builder</div>
 </div>
 
@@ -154,14 +162,11 @@ iframe {
         <button class="btn" onclick="goHome()">Home</button>
     </div>
 
+    <div class="homeMsg" id="homeMsg">🌌 Move your mouse...</div>
     <iframe id="frame"></iframe>
 </div>
 
 <script>
-/* ======================
-   🎮 GAME SYSTEM
-====================== */
-
 let games = [
     { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/", tag: "Racing" },
     { name: "Run 3", url: "https://lekug.github.io/tn6pS9dCf37xAhkJv/", tag: "Runner" },
@@ -169,12 +174,12 @@ let games = [
     { name: "Hole.io", url: "https://holeio.com/", tag: "Arcade" },
     { name: "Granny", url: "https://genizymath.github.io/iframe/90-fix2.html", tag: "Horror" },
     { name: "Paper.io 2", url: "https://paperio.site/", tag: "Multiplayer" },
-    { name: "Agar.io (Broken)", url: "https://agar.io/#ffa", tag: "Multiplayer" },
+    { name: "Agar.io", url: "https://agar.io/#ffa", tag: "Multiplayer" },
     { name: "Gulper.io", url: "https://gulper.io/", tag: "Multiplayer" },
     { name: "Basket Bros", url: "https://basketbros.io/", tag: "Sports" },
     { name: "Rocket Goal", url: "https://rocketgoal.io/", tag: "Sports" },
     { name: "Open Front", url: "https://openfront.io/", tag: "War" },
-    { name: "Minecraft", url: "https://eaglercraft.com/play/?version=1.8.8", tag: "Arcade" },
+    { name: "Minecraft", url: "https://eaglercraft.com/play/?version=1.8.8", tag: "Sandbox" },
     { name: "Capybara Clicker", url: "https://capybara-clicker.com/", tag: "Clicker" }
 ];
 
@@ -182,41 +187,37 @@ const list = document.getElementById("gameList");
 const frame = document.getElementById("frame");
 const search = document.getElementById("search");
 const canvas = document.getElementById("stars");
+const homeMsg = document.getElementById("homeMsg");
 
 function renderGames(filter = "") {
     list.innerHTML = "";
-
     games
-    .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(game => {
-        const div = document.createElement("div");
-        div.className = "game";
-        div.innerHTML = `
-            <div class="game-title">${game.name}</div>
-            <div class="tag">${game.tag}</div>
-        `;
-        div.onclick = () => loadGame(game.url);
-        list.appendChild(div);
-    });
+        .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(game => {
+            const div = document.createElement("div");
+            div.className = "game";
+            div.innerHTML = `<div class="game-title">${game.name}</div><div class="tag">${game.tag}</div>`;
+            div.onclick = () => loadGame(game.url);
+            list.appendChild(div);
+        });
 }
 
 function goHome() {
     frame.src = "";
     canvas.classList.remove("hidden");
+    homeMsg.style.display = "block";
 }
 
 function loadGame(url) {
     frame.src = url;
     canvas.classList.add("hidden");
+    homeMsg.style.display = "none";
 }
 
 search.addEventListener("input", e => renderGames(e.target.value));
 renderGames();
 
-/* ======================
-   🌌 CONSTELLATION
-====================== */
-
+/* 🌌 CONSTELLATION */
 const ctx = canvas.getContext("2d");
 let w, h;
 let particles = [];
@@ -242,44 +243,31 @@ class Particle {
         this.vy = (Math.random() - 0.5) * 0.8;
         this.size = 2;
     }
-
     move() {
         this.x += this.vx;
         this.y += this.vy;
-
         if (this.x < 0 || this.x > w) this.vx *= -1;
         if (this.y < 0 || this.y > h) this.vy *= -1;
 
-        if (mouse.x && mouse.y) {
-            let dx = mouse.x - this.x;
-            let dy = mouse.y - this.y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-
-            if (dist < 160) {
-                this.x += dx * 0.02;
-                this.y += dy * 0.02;
-            }
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 150) {
+            this.x += dx * 0.02;
+            this.y += dy * 0.02;
         }
     }
-
     draw() {
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = "#7c3aed";
-
         ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
-
-        ctx.shadowBlur = 0;
     }
 }
 
 function init() {
     particles = [];
-    for (let i = 0; i < 80; i++) {
-        particles.push(new Particle());
-    }
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
 }
 
 function connect() {
@@ -289,9 +277,8 @@ function connect() {
             let dy = particles[i].y - particles[j].y;
             let dist = Math.sqrt(dx*dx + dy*dy);
 
-            if (dist < 140) {
-                ctx.strokeStyle = `rgba(34,211,238,${1 - dist/140})`;
-                ctx.lineWidth = 1;
+            if (dist < 130) {
+                ctx.strokeStyle = `rgba(124,58,237,${1 - dist/130})`;
                 ctx.beginPath();
                 ctx.moveTo(particles[i].x, particles[i].y);
                 ctx.lineTo(particles[j].x, particles[j].y);
@@ -303,12 +290,7 @@ function connect() {
 
 function animate() {
     ctx.clearRect(0, 0, w, h);
-
-    particles.forEach(p => {
-        p.move();
-        p.draw();
-    });
-
+    particles.forEach(p => { p.move(); p.draw(); });
     connect();
     requestAnimationFrame(animate);
 }
