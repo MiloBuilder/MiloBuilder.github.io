@@ -123,17 +123,19 @@ h1{
     background:rgba(255,255,255,0.08);
 }
 
-/* 🎮 FIXED GRID SPACING */
+/* 🎮 GRID (REAL FIX) */
 .grid{
     flex:1;
     min-height:0;
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 
-    /* 🔥 REAL FIX: separate row vs column spacing */
-    gap:60px 40px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 
-    padding:80px 50px 120px;
+    /* real separation */
+    gap:55px;
+
+    /* breathing room so rows don't feel stacked */
+    padding:90px 60px 140px;
 
     max-width:1100px;
     margin:0 auto;
@@ -142,25 +144,32 @@ h1{
 
     align-content:start;
     justify-content:center;
+
+    row-gap:80px;
 }
 
+/* 🎮 CARD (FIX FOR “FUSING LOOK”) */
 .card{
     aspect-ratio:1/1;
-    border-radius:14px;
+    border-radius:16px;
     overflow:hidden;
     position:relative;
     cursor:pointer;
+
     background:var(--panel);
     border:1px solid rgba(255,255,255,0.06);
+
     transition:0.25s ease;
 
-    display:block;
+    /* IMPORTANT: prevents visual blending */
+    contain: paint;
+    will-change: transform;
 
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.5);
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-6px) scale(1.03);
 }
 
 .card img{
@@ -173,9 +182,9 @@ h1{
     position:absolute;
     bottom:0;
     width:100%;
-    padding:8px;
+    padding:10px;
     font-size:0.85rem;
-    background:linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 }
 
 /* 🎮 GAME VIEW */
@@ -259,7 +268,6 @@ iframe{
 
 <div class="grid" id="grid"></div>
 
-<!-- 🎮 GAME VIEW -->
 <div id="gameFrame">
     <div class="game-ui">
 
@@ -344,7 +352,6 @@ document.getElementById("search").addEventListener("input",e=>{
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD FROM games.json */
 fetch("games.json")
 .then(res=>res.json())
 .then(data=>{
