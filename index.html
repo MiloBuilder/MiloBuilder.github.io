@@ -2,207 +2,169 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Galactic Games</title>
 
 <style>
-:root{
-    --bg:#05060a;
-    --panel: rgba(255,255,255,0.06);
-    --text:#eaeaea;
-    --muted:#9aa0aa;
-    --accent:#8b5cf6;
-    --accent2:#22d3ee;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
-
-/* RESET */
-*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
     font-family: ui-sans-serif, system-ui;
-    background: var(--bg);
-    color: var(--text);
+    background:#05060a;
+    color:white;
     height:100vh;
     overflow:hidden;
 }
 
-/* =========================
-   🎲 CUBE BACKGROUND
-========================= */
-body::before{
-    content:"";
+/* ⭐ STAR BACKGROUND (NEW) */
+#stars{
     position:fixed;
     inset:0;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(139,92,246,0.15), transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(34,211,238,0.12), transparent 40%),
-        linear-gradient(120deg, rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 80px 80px;
-    animation: moveBG 20s linear infinite;
-    pointer-events:none;
-    opacity:0.8;
+    background:black;
+    overflow:hidden;
+    z-index:-1;
 }
 
-@keyframes moveBG{
-    from{transform:translateY(0);}
-    to{transform:translateY(-80px);}
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:0.6;
+    animation: float 6s linear infinite;
 }
 
-/* =========================
-   HEADER
-========================= */
+@keyframes float{
+    from{ transform: translateY(0); }
+    to{ transform: translateY(-100vh); }
+}
+
+/* HEADER */
 header{
     text-align:center;
-    padding:30px 20px 10px;
+    padding:30px;
 }
 
 h1{
     font-size:3rem;
-    background: linear-gradient(90deg, #fff, var(--accent), var(--accent2));
+    background: linear-gradient(90deg,#fff,#8b5cf6,#22d3ee);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 }
 
 .subtitle{
-    color:var(--muted);
+    color:#aaa;
     margin-top:6px;
 }
 
-/* =========================
-   CONTROLS (A-Z STILL HERE)
-========================= */
+/* CONTROLS */
 .controls{
     display:flex;
     justify-content:center;
-    gap:12px;
-    margin-top:18px;
+    gap:10px;
+    margin-top:15px;
 }
 
 #search{
     padding:12px 16px;
     border-radius:999px;
-    border:1px solid rgba(255,255,255,0.1);
-    background:rgba(0,0,0,0.4);
+    border:none;
+    width:250px;
+    background:rgba(255,255,255,0.08);
     color:white;
-    width:260px;
     outline:none;
-    backdrop-filter: blur(10px);
 }
 
-.sort-btn{
+button{
     padding:12px 16px;
     border-radius:999px;
     border:none;
-    background:rgba(255,255,255,0.08);
-    color:white;
     cursor:pointer;
-    backdrop-filter: blur(10px);
+    background:rgba(255,255,255,0.1);
+    color:white;
 }
 
-/* =========================
-   GRID
-========================= */
+/* 🎮 NEW GRID (FIXED — NO FUSING) */
 .grid{
     height:calc(100vh - 150px);
     overflow-y:auto;
+
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap:35px;
-    padding:50px 60px;
-    max-width:1200px;
-    margin:0 auto;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap:30px;
+
+    padding:40px;
+    max-width:1100px;
+    margin:auto;
 }
 
-/* =========================
-   GAME CARD (CUBE STYLE)
-========================= */
+/* GAME CARD (CLEAN TILE STYLE) */
 .card{
+    width:100%;
     aspect-ratio:1/1;
-    border-radius:18px;
+    border-radius:16px;
     overflow:hidden;
-    position:relative;
     cursor:pointer;
 
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.08);
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
 
-    transition:0.25s ease;
-
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    backdrop-filter: blur(10px);
+    transition:0.25s;
+    position:relative;
 }
 
 .card:hover{
-    transform:translateY(-8px) scale(1.05);
-    box-shadow:0 15px 40px rgba(0,0,0,0.7);
+    transform:scale(1.06);
+    box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
 .card img{
     width:100%;
     height:100%;
     object-fit:cover;
-    filter: brightness(0.9);
 }
 
 .title{
     position:absolute;
     bottom:0;
     width:100%;
-    padding:10px;
+    padding:8px;
     font-size:0.85rem;
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 }
 
-/* =========================
-   GAME OVERLAY (MODERN GLASS UI)
-========================= */
-#gameOverlay{
+/* 🎮 OVERLAY (NEW CLEAN UI) */
+#overlay{
     position:fixed;
     inset:0;
     display:none;
+    background:rgba(0,0,0,0.9);
+    backdrop-filter:blur(10px);
     justify-content:center;
     align-items:center;
-    background:rgba(0,0,0,0.8);
-    backdrop-filter: blur(12px);
 }
 
 .window{
     width:95%;
     height:92%;
-    background:rgba(15,15,25,0.9);
-    border:1px solid rgba(255,255,255,0.08);
+    background:#0c0f18;
     border-radius:18px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    box-shadow:0 0 60px rgba(0,0,0,0.8);
+    border:1px solid rgba(255,255,255,0.1);
 }
 
 .topbar{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    padding:12px 16px;
-    background:rgba(255,255,255,0.05);
-}
-
-.gameTitle{
-    color:#ddd;
-}
-
-.btns button{
-    background:rgba(255,255,255,0.1);
-    border:none;
-    color:white;
-    padding:6px 10px;
-    margin-left:8px;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-.btns button:hover{
-    background:rgba(255,255,255,0.2);
+    padding:10px 15px;
+    background:#151a2a;
 }
 
 iframe{
@@ -210,30 +172,35 @@ iframe{
     width:100%;
     border:none;
 }
+
+.btns button{
+    margin-left:8px;
+}
 </style>
 </head>
 
 <body>
 
+<div id="stars"></div>
+
 <header>
     <h1>Galactic Games</h1>
-    <div class="subtitle">A futuristic game launcher</div>
+    <div class="subtitle">Star Launcher Edition</div>
 
     <div class="controls">
         <input id="search" placeholder="Search games..." />
-        <button class="sort-btn" id="sortBtn" onclick="toggleSort()">A-Z</button>
+        <button id="sortBtn" onclick="toggleSort()">A-Z</button>
     </div>
 </header>
 
 <div class="grid" id="grid"></div>
 
-<!-- GAME OVERLAY -->
-<div id="gameOverlay">
+<!-- OVERLAY -->
+<div id="overlay">
     <div class="window">
 
         <div class="topbar">
-            <div class="gameTitle" id="gameTitle">Game</div>
-
+            <div id="title">Game</div>
             <div class="btns">
                 <button onclick="fullscreen()">⛶</button>
                 <button onclick="closeGame()">✕</button>
@@ -249,19 +216,33 @@ let games=[];
 let sort="asc";
 
 const grid=document.getElementById("grid");
-const overlay=document.getElementById("gameOverlay");
+const overlay=document.getElementById("overlay");
 const frame=document.getElementById("frame");
-const title=document.getElementById("gameTitle");
-const btn=document.getElementById("sortBtn");
+const title=document.getElementById("title");
 
+/* ⭐ STAR GENERATOR */
+function createStars(){
+    const container=document.getElementById("stars");
+    for(let i=0;i<120;i++){
+        let s=document.createElement("div");
+        s.className="star";
+        s.style.left=Math.random()*100+"vw";
+        s.style.top=Math.random()*100+"vh";
+        s.style.animationDuration=(2+Math.random()*5)+"s";
+        container.appendChild(s);
+    }
+}
+createStars();
+
+/* RENDER */
 function render(list){
     grid.innerHTML="";
     list.forEach(g=>{
-        const c=document.createElement("div");
+        let c=document.createElement("div");
         c.className="card";
 
         c.innerHTML=`
-            <img src="${g.image || 'https://picsum.photos/300/300?random=' + Math.random()}">
+            <img src="${g.image || 'https://picsum.photos/300?random='+Math.random()}">
             <div class="title">${g.name}</div>
         `;
 
@@ -270,9 +251,10 @@ function render(list){
     });
 }
 
-function openGame(game){
-    frame.src=game.url;
-    title.innerText=game.name;
+/* OPEN GAME */
+function openGame(g){
+    frame.src=g.url;
+    title.innerText=g.name;
     overlay.style.display="flex";
 }
 
@@ -281,11 +263,12 @@ function closeGame(){
     frame.src="";
 }
 
+/* FULLSCREEN */
 function fullscreen(){
     const el=document.querySelector(".window");
     if(!document.fullscreenElement){
         el.requestFullscreen();
-    } else {
+    }else{
         document.exitFullscreen();
     }
 }
@@ -293,7 +276,7 @@ function fullscreen(){
 /* SORT */
 function toggleSort(){
     sort = sort==="asc" ? "desc" : "asc";
-    btn.innerText = sort==="asc" ? "A-Z" : "Z-A";
+    document.getElementById("sortBtn").innerText=sort==="asc"?"A-Z":"Z-A";
 
     games.sort((a,b)=>{
         return sort==="asc"
@@ -306,15 +289,15 @@ function toggleSort(){
 
 /* SEARCH */
 document.getElementById("search").addEventListener("input",e=>{
-    const v=e.target.value.toLowerCase();
+    let v=e.target.value.toLowerCase();
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
 /* LOAD */
 fetch("games.json")
 .then(r=>r.json())
-.then(data=>{
-    games=data;
+.then(d=>{
+    games=d;
     render(games);
 });
 </script>
