@@ -138,5 +138,10 @@
     "name": "Wacky Flip",
     "url": "https://game.azgame.io/wacky-flip/",
     "image": "https://wacky-flip.io/data/image/wacky-flip.png"
+  },
+  {
+    "name": "Rocket Goal",
+    "url": "https://rocketgoal.io/",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR0GsNk3V3-nEVbxBP3L9PAQox0_JIgJ-kb0w&s"
   }
 ]
