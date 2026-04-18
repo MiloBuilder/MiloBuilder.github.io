@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Galactics Games</title>
+<title>Galactic's Games</title>
 
 <style>
 :root{
@@ -123,23 +123,24 @@ h1{
     background:rgba(255,255,255,0.08);
 }
 
-/* ✅ FIXED GRID (more space top/bottom) */
+/* ✅ FIXED GRID (no more fusion) */
 .grid{
     flex:1;
     min-height:0;
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap:28px;
 
-    padding:60px 40px 80px;
+    gap:32px;
+
+    padding:70px 50px 100px;
 
     max-width:1100px;
     margin:0 auto;
 
     overflow-y:auto;
 
-    scroll-padding-top:60px;
-    scroll-padding-bottom:80px;
+    /* 🔥 IMPORTANT: prevents row merging visually */
+    align-content:start;
 }
 
 .card{
@@ -151,6 +152,9 @@ h1{
     background:var(--panel);
     border:1px solid rgba(255,255,255,0.06);
     transition:0.2s;
+
+    /* 🔥 prevents rendering artifacts */
+    display:block;
 }
 
 .card:hover{
@@ -338,7 +342,7 @@ document.getElementById("search").addEventListener("input",e=>{
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD GAMES */
+/* LOAD FROM games.json */
 fetch("games.json")
 .then(res=>res.json())
 .then(data=>{
