@@ -123,24 +123,27 @@ h1{
     background:rgba(255,255,255,0.08);
 }
 
-/* ✅ FIXED GRID (no more fusion) */
+/* 🎮 FIXED GRID (REAL FIX) */
 .grid{
     flex:1;
     min-height:0;
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 
-    gap:32px;
+    gap:40px;
 
-    padding:70px 50px 100px;
+    padding:80px 50px 120px;
 
     max-width:1100px;
     margin:0 auto;
 
     overflow-y:auto;
 
-    /* 🔥 IMPORTANT: prevents row merging visually */
     align-content:start;
+    justify-content:center;
+
+    scroll-padding-top:80px;
+    scroll-padding-bottom:120px;
 }
 
 .card{
@@ -153,8 +156,10 @@ h1{
     border:1px solid rgba(255,255,255,0.06);
     transition:0.2s;
 
-    /* 🔥 prevents rendering artifacts */
     display:block;
+
+    /* 🔥 fixes “fusion look” */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
 }
 
 .card:hover{
@@ -342,7 +347,7 @@ document.getElementById("search").addEventListener("input",e=>{
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD FROM games.json */
+/* LOAD GAMES FROM BOT */
 fetch("games.json")
 .then(res=>res.json())
 .then(data=>{
