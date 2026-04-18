@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Galactic's Games</title>
+<title>Galactic Games</title>
 
 <style>
 :root{
@@ -15,23 +15,46 @@
     --accent2:#22d3ee;
 }
 
+/* RESET */
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
     font-family: ui-sans-serif, system-ui;
-    background: radial-gradient(circle at top, #0b0d14, var(--bg));
-    color:var(--text);
+    background: var(--bg);
+    color: var(--text);
     height:100vh;
     overflow:hidden;
-    display:flex;
-    flex-direction:column;
 }
 
-/* HEADER */
+/* =========================
+   🎲 CUBE BACKGROUND
+========================= */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(139,92,246,0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(34,211,238,0.12), transparent 40%),
+        linear-gradient(120deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 80px 80px;
+    animation: moveBG 20s linear infinite;
+    pointer-events:none;
+    opacity:0.8;
+}
+
+@keyframes moveBG{
+    from{transform:translateY(0);}
+    to{transform:translateY(-80px);}
+}
+
+/* =========================
+   HEADER
+========================= */
 header{
     text-align:center;
-    padding:40px 20px 10px;
-    flex-shrink:0;
+    padding:30px 20px 10px;
 }
 
 h1{
@@ -46,59 +69,80 @@ h1{
     margin-top:6px;
 }
 
+/* =========================
+   CONTROLS (A-Z STILL HERE)
+========================= */
 .controls{
     display:flex;
     justify-content:center;
-    gap:10px;
+    gap:12px;
     margin-top:18px;
 }
 
 #search{
     padding:12px 16px;
     border-radius:999px;
-    border:1px solid rgba(255,255,255,0.08);
-    background:var(--panel);
+    border:1px solid rgba(255,255,255,0.1);
+    background:rgba(0,0,0,0.4);
     color:white;
     width:260px;
     outline:none;
+    backdrop-filter: blur(10px);
 }
 
-/* GRID (CLEAN + STABLE) */
+.sort-btn{
+    padding:12px 16px;
+    border-radius:999px;
+    border:none;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    cursor:pointer;
+    backdrop-filter: blur(10px);
+}
+
+/* =========================
+   GRID
+========================= */
 .grid{
-    flex:1;
+    height:calc(100vh - 150px);
     overflow-y:auto;
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap:30px;
-    padding:60px 50px;
-    max-width:1100px;
+    gap:35px;
+    padding:50px 60px;
+    max-width:1200px;
     margin:0 auto;
-    align-content:start;
 }
 
+/* =========================
+   GAME CARD (CUBE STYLE)
+========================= */
 .card{
-    width:100%;
     aspect-ratio:1/1;
-    border-radius:16px;
+    border-radius:18px;
     overflow:hidden;
-    cursor:pointer;
     position:relative;
+    cursor:pointer;
 
-    background:#111522;
-    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
 
     transition:0.25s ease;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
 }
 
 .card:hover{
-    transform:scale(1.05);
-    box-shadow:0 10px 25px rgba(0,0,0,0.5);
+    transform:translateY(-8px) scale(1.05);
+    box-shadow:0 15px 40px rgba(0,0,0,0.7);
 }
 
 .card img{
     width:100%;
     height:100%;
     object-fit:cover;
+    filter: brightness(0.9);
 }
 
 .title{
@@ -111,61 +155,56 @@ h1{
 }
 
 /* =========================
-   🎮 NEW GAME OVERLAY
+   GAME OVERLAY (MODERN GLASS UI)
 ========================= */
-
 #gameOverlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.92);
     display:none;
-    align-items:center;
     justify-content:center;
-    z-index:999;
+    align-items:center;
+    background:rgba(0,0,0,0.8);
+    backdrop-filter: blur(12px);
 }
 
-/* main window */
-.gameWindow{
+.window{
     width:95%;
     height:92%;
-    background:#0c0f18;
+    background:rgba(15,15,25,0.9);
+    border:1px solid rgba(255,255,255,0.08);
     border-radius:18px;
     overflow:hidden;
     display:flex;
     flex-direction:column;
-    box-shadow:0 0 50px rgba(0,0,0,0.8);
+    box-shadow:0 0 60px rgba(0,0,0,0.8);
 }
 
-/* top bar */
-.gameTop{
+.topbar{
     display:flex;
     justify-content:space-between;
     align-items:center;
     padding:12px 16px;
-    background:#151a2a;
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.05);
 }
 
 .gameTitle{
-    font-size:0.95rem;
     color:#ddd;
 }
 
-.gameBtns button{
-    background:rgba(255,255,255,0.08);
+.btns button{
+    background:rgba(255,255,255,0.1);
     border:none;
     color:white;
     padding:6px 10px;
+    margin-left:8px;
     border-radius:8px;
     cursor:pointer;
-    margin-left:8px;
 }
 
-.gameBtns button:hover{
+.btns button:hover{
     background:rgba(255,255,255,0.2);
 }
 
-/* iframe area */
 iframe{
     flex:1;
     width:100%;
@@ -177,24 +216,25 @@ iframe{
 <body>
 
 <header>
-    <h1>Galactic's Games</h1>
-    <div class="subtitle">Made by Galactic_Z</div>
+    <h1>Galactic Games</h1>
+    <div class="subtitle">A futuristic game launcher</div>
 
     <div class="controls">
         <input id="search" placeholder="Search games..." />
+        <button class="sort-btn" id="sortBtn" onclick="toggleSort()">A-Z</button>
     </div>
 </header>
 
 <div class="grid" id="grid"></div>
 
-<!-- 🎮 NEW OVERLAY -->
+<!-- GAME OVERLAY -->
 <div id="gameOverlay">
-    <div class="gameWindow">
+    <div class="window">
 
-        <div class="gameTop">
+        <div class="topbar">
             <div class="gameTitle" id="gameTitle">Game</div>
 
-            <div class="gameBtns">
+            <div class="btns">
                 <button onclick="fullscreen()">⛶</button>
                 <button onclick="closeGame()">✕</button>
             </div>
@@ -206,11 +246,13 @@ iframe{
 
 <script>
 let games=[];
+let sort="asc";
 
 const grid=document.getElementById("grid");
 const overlay=document.getElementById("gameOverlay");
 const frame=document.getElementById("frame");
 const title=document.getElementById("gameTitle");
+const btn=document.getElementById("sortBtn");
 
 function render(list){
     grid.innerHTML="";
@@ -240,7 +282,7 @@ function closeGame(){
 }
 
 function fullscreen(){
-    const el=document.querySelector(".gameWindow");
+    const el=document.querySelector(".window");
     if(!document.fullscreenElement){
         el.requestFullscreen();
     } else {
@@ -248,13 +290,27 @@ function fullscreen(){
     }
 }
 
-/* search */
+/* SORT */
+function toggleSort(){
+    sort = sort==="asc" ? "desc" : "asc";
+    btn.innerText = sort==="asc" ? "A-Z" : "Z-A";
+
+    games.sort((a,b)=>{
+        return sort==="asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name);
+    });
+
+    render(games);
+}
+
+/* SEARCH */
 document.getElementById("search").addEventListener("input",e=>{
     const v=e.target.value.toLowerCase();
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* load json */
+/* LOAD */
 fetch("games.json")
 .then(r=>r.json())
 .then(data=>{
