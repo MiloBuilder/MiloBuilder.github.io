@@ -148,5 +148,10 @@
     "name": "Veck.io",
     "url": "https://veck.io/",
     "image": "https://veckio.io//data/image/game/veck-io-game1.jpg"
+  },
+  {
+    "name": "Happy Glass",
+    "url": "https://www.yurk.com/games/happyglass/",
+    "image": "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/649f916152c6defac7c09dbaf29f74e9/happy-glass.jfif"
   }
 ]
