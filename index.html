@@ -15,17 +15,20 @@
 body{
     font-family: ui-sans-serif, system-ui;
     background:#05060a;
+    height:100vh;
     overflow:hidden;
     color:white;
 }
 
-/* ⭐ STAR BACKGROUND (MOUSE FOLLOW) */
+/* =========================
+   ⭐ STAR BACKGROUND (MOUSE)
+========================= */
 #bg{
     position:fixed;
     inset:0;
-    overflow:hidden;
     z-index:-1;
     background:radial-gradient(circle at center, #0b0d14, #05060a);
+    overflow:hidden;
 }
 
 .star{
@@ -35,10 +38,12 @@ body{
     background:white;
     border-radius:50%;
     opacity:0.6;
-    transition:transform 0.1s linear;
+    transition:transform 0.15s ease;
 }
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 header{
     text-align:center;
     padding:30px;
@@ -83,46 +88,75 @@ button{
     color:white;
 }
 
-/* 🎮 GRID (CLEAN - NO FUSING POSSIBLE) */
+/* =========================
+   GRID (🔥 FIXED FUSION ISSUE)
+========================= */
+
+/*
+KEY FIXES:
+- fixed height container (prevents overlap bugs)
+- proper padding separation
+- stable grid sizing
+- no collapsing rows
+*/
+
 .grid{
-    height:calc(100vh - 150px);
+    position:relative;
+    height:calc(100vh - 160px);
     overflow-y:auto;
 
     display:grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap:28px;
 
-    padding:50px;
+    padding:60px;
+
     max-width:1100px;
-    margin:auto;
+    margin:0 auto;
+
+    align-content:start;
 }
 
-/* SCROLLBAR (PURPLE) */
+/* =========================
+   ⭐ CLEAN PURPLE SCROLLBAR
+========================= */
 .grid::-webkit-scrollbar{
     width:10px;
 }
 
 .grid::-webkit-scrollbar-track{
-    background:#0b0d14;
+    background:transparent;
 }
 
 .grid::-webkit-scrollbar-thumb{
-    background:linear-gradient(#8b5cf6,#22d3ee);
+    background:#8b5cf6;
     border-radius:10px;
 }
 
-/* CARDS */
+.grid::-webkit-scrollbar-thumb:hover{
+    background:#22d3ee;
+}
+
+/* =========================
+   GAME CARD (NO FUSING FIX)
+========================= */
+
 .card{
+    width:100%;
     aspect-ratio:1/1;
+
     border-radius:16px;
     overflow:hidden;
-    cursor:pointer;
     position:relative;
+    cursor:pointer;
 
     background:rgba(255,255,255,0.06);
     border:1px solid rgba(255,255,255,0.1);
 
     transition:0.2s;
+
+    /* 🔥 IMPORTANT FIX: prevents visual blending */
+    isolation:isolate;
 }
 
 .card:hover{
@@ -145,7 +179,9 @@ button{
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 }
 
-/* OVERLAY */
+/* =========================
+   OVERLAY
+========================= */
 #overlay{
     position:fixed;
     inset:0;
@@ -219,8 +255,8 @@ const frame=document.getElementById("frame");
 const title=document.getElementById("title");
 
 /* ⭐ STARS */
-const stars=[];
 const bg=document.getElementById("bg");
+const stars=[];
 
 for(let i=0;i<120;i++){
     let s=document.createElement("div");
@@ -231,13 +267,13 @@ for(let i=0;i<120;i++){
     stars.push(s);
 }
 
-/* ⭐ MOUSE MOVE EFFECT */
+/* ⭐ MOUSE STAR MOVEMENT */
 document.addEventListener("mousemove",(e)=>{
-    let x=(e.clientX/window.innerWidth - 0.5)*20;
-    let y=(e.clientY/window.innerHeight - 0.5)*20;
+    let x=(e.clientX/window.innerWidth - 0.5)*25;
+    let y=(e.clientY/window.innerHeight - 0.5)*25;
 
     stars.forEach((s,i)=>{
-        s.style.transform=`translate(${x*(i%5)}px, ${y*(i%5)}px)`;
+        s.style.transform=`translate(${x*(i%4)}px, ${y*(i%4)}px)`;
     });
 });
 
@@ -258,7 +294,7 @@ function render(list){
     });
 }
 
-/* OPEN */
+/* OPEN GAME */
 function openGame(g){
     frame.src=g.url;
     title.innerText=g.name;
@@ -290,7 +326,7 @@ document.getElementById("search").addEventListener("input",e=>{
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD */
+/* LOAD JSON */
 fetch("games.json")
 .then(r=>r.json())
 .then(d=>{
