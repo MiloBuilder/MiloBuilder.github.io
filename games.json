@@ -223,5 +223,10 @@
     "name": "Fallout 2",
     "url": "https://constructvod.github.io/Fallout/",
     "image": "https://upload.wikimedia.org/wikipedia/en/c/c3/PC_Game_Fallout_2.jpg"
+  },
+  {
+    "name": "Kiosk",
+    "url": "https://playgama.com/export/game/kiosk?export_mode=portal",
+    "image": "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/e2ad7de1-be77-4590-0336-c43472a4a500/thumb"
   }
 ]
