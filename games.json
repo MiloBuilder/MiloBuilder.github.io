@@ -228,5 +228,10 @@
     "name": "Kiosk",
     "url": "https://playgama.com/export/game/kiosk?export_mode=portal",
     "image": "https://playgama.com/cdn-cgi/imagedelivery/LN2S-4p3-GgZvEx3IPaKUA/e2ad7de1-be77-4590-0336-c43472a4a500/thumb"
+  },
+  {
+    "name": "Kinda Hard Golf",
+    "url": "https://kindahardgolf.com/",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrETCjt3V_-MiwISuvklg6LKze60k3-32kGQ&s"
   }
 ]
