@@ -2,303 +2,342 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>❄️ Milo's Gaming Hub</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galactics Games</title>
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    height: 100vh;
-    display: flex;
-    overflow: hidden;
-    background: radial-gradient(circle at top, #111827, #05070f);
-    color: white;
+:root{
+    --bg:#05060a;
+    --panel: rgba(255,255,255,0.06);
+    --text:#eaeaea;
+    --muted:#9aa0aa;
+    --accent:#8b5cf6;
+    --accent2:#22d3ee;
 }
 
-html { scroll-behavior: smooth; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
-/* 🌌 CONSTELLATION */
-canvas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-}
-canvas.hidden { opacity: 0; }
-
-/* SIDEBAR */
-.sidebar {
-    width: 300px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255,255,255,0.1);
+body{
+    font-family: ui-sans-serif, system-ui;
+    background: radial-gradient(circle at top, #0b0d14, var(--bg));
+    color:var(--text);
+    height:100vh;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
 }
 
-.title {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    background: linear-gradient(90deg, #7c3aed, #22d3ee);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:60px 60px;
+    opacity:0.2;
+    pointer-events:none;
 }
 
-.search {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    outline: none;
-    background: rgba(255,255,255,0.08);
-    color: white;
+header{
+    text-align:center;
+    padding:40px 20px 10px;
+    flex-shrink:0;
 }
 
-/* SCROLLBAR */
-#gameList {
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-right: 5px;
-}
-#gameList::-webkit-scrollbar { width: 8px; }
-#gameList::-webkit-scrollbar-thumb {
-    background: linear-gradient(#7c3aed, #22d3ee);
-    border-radius: 10px;
-}
-#gameList { scrollbar-width: thin; scrollbar-color: #7c3aed transparent; }
-
-/* GAME */
-.game {
-    padding: 12px;
-    border-radius: 14px;
-    cursor: pointer;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.08);
-    transition: 0.25s;
-}
-.game:hover {
-    transform: translateY(-3px);
-    background: rgba(255,255,255,0.12);
+h1{
+    font-size:3rem;
+    background: linear-gradient(90deg, #fff, var(--accent), var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-.game-title { font-weight: 600; font-size: 14px; }
-.tag { font-size: 11px; opacity: 0.7; }
-
-/* MAIN */
-.main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+.subtitle{
+    color:var(--muted);
+    margin-top:6px;
 }
 
-.bar {
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255,255,255,0.05);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+.controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
 }
 
-.btn {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    color: white;
-    background: linear-gradient(135deg, #7c3aed, #22d3ee);
+#search{
+    padding:12px 16px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.08);
+    background:var(--panel);
+    color:white;
+    width:260px;
+    outline:none;
 }
 
-iframe {
-    flex: 1;
-    width: 100%;
-    border: none;
-    background: black;
+.sort{
+    position:relative;
 }
 
-.homeMsg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 22px;
-    opacity: 0.6;
+.sort-btn{
+    padding:12px 16px;
+    border-radius:999px;
+    border:none;
+    background:var(--panel);
+    color:white;
+    cursor:pointer;
 }
 
-.credits {
-    font-size: 11px;
-    opacity: 0.6;
-    text-align: center;
-    margin-top: auto;
+.sort-menu{
+    position:absolute;
+    top:120%;
+    left:0;
+    width:120px;
+    background:#0f1118;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(-8px);
+    pointer-events:none;
+    transition:0.2s ease;
+    z-index:10;
+}
+
+.sort-menu.active{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+}
+
+.sort-menu button{
+    width:100%;
+    padding:10px;
+    background:none;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+
+.sort-menu button:hover{
+    background:rgba(255,255,255,0.08);
+}
+
+.grid{
+    flex:1;
+    min-height:0;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap:24px;
+    padding:20px 40px 40px;
+    max-width:1100px;
+    margin:0 auto;
+    overflow-y:auto;
+}
+
+.card{
+    aspect-ratio:1/1;
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+    cursor:pointer;
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,0.06);
+    transition:0.2s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.title{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    padding:8px;
+    font-size:0.85rem;
+    background:linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+}
+
+/* 🎮 GAME VIEW */
+#gameFrame{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.95);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+#gameFrame.active{display:flex;}
+
+.game-ui{
+    width:96%;
+    height:96%;
+    display:flex;
+    flex-direction:column;
+    border-radius:16px;
+    overflow:hidden;
+    background:#0b0d14;
+    box-shadow:0 0 40px rgba(0,0,0,0.8);
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 14px;
+    background:linear-gradient(90deg, #111, #1a1d2a);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+#gameTitle{
+    font-size:0.9rem;
+    color:#ccc;
+}
+
+.actions button{
+    background:rgba(255,255,255,0.08);
+    border:none;
+    color:white;
+    margin-left:8px;
+    padding:6px 10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.actions button:hover{
+    background:rgba(255,255,255,0.2);
+}
+
+iframe{
+    flex:1;
+    width:100%;
+    border:none;
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
+<header>
+    <h1>Galactic's Games</h1>
+    <div class="subtitle">Made by Galactic_Z</div>
 
-<div class="sidebar">
-    <div class="title">❄️ Milo's Gaming Hub</div>
-    <input class="search" id="search" placeholder="Search games..." />
-    <div id="gameList"></div>
-    <div class="credits">Made by Milo Builder</div>
-</div>
+    <div class="controls">
+        <input id="search" placeholder="Search games..." />
 
-<div class="main">
-    <div class="bar">
-        <div>✨ Select a game to play</div>
-        <button class="btn" onclick="goHome()">Home</button>
+        <div class="sort">
+            <button class="sort-btn" id="sortBtn" onclick="toggleMenu()">A-Z</button>
+            <div class="sort-menu" id="menu">
+                <button onclick="setSort('asc')">A-Z</button>
+                <button onclick="setSort('desc')">Z-A</button>
+            </div>
+        </div>
     </div>
+</header>
 
-    <div class="homeMsg" id="homeMsg">Welcome to Milo's Gaming Hub.</div>
-    <iframe id="frame"></iframe>
+<div class="grid" id="grid"></div>
+
+<!-- 🎮 GAME VIEW -->
+<div id="gameFrame">
+    <div class="game-ui">
+
+        <div class="topbar">
+            <span id="gameTitle">Game</span>
+            <div class="actions">
+                <button onclick="toggleFullscreen()">⛶</button>
+                <button onclick="closeGame()">✕</button>
+            </div>
+        </div>
+
+        <iframe id="frame"></iframe>
+
+    </div>
 </div>
 
 <script>
-let games = [
-    { name: "Snow Rider 3D", url: "https://itsvijaysingh.github.io/Snow-Rider3D/", tag: "Racing" },
-    { name: "Run 3", url: "https://lekug.github.io/tn6pS9dCf37xAhkJv/", tag: "Runner" },
-    { name: "Veck.io", url: "https://veck.io/", tag: "Multiplayer" },
-    { name: "Hole.io", url: "https://holeio.com/", tag: "Arcade" },
-    { name: "Granny", url: "https://genizymath.github.io/iframe/90-fix2.html", tag: "Horror" },
-    { name: "Paper.io 2", url: "https://paperio.site/", tag: "Multiplayer" },
-    { name: "Agar.io", url: "https://agar.io/#ffa", tag: "Multiplayer" },
-    { name: "Gulper.io", url: "https://gulper.io/", tag: "Multiplayer" },
-    { name: "Basket Bros", url: "https://basketbros.io/", tag: "Sports" },
-    { name: "Rocket Goal", url: "https://rocketgoal.io/", tag: "Sports" },
-    { name: "Open Front", url: "https://openfront.io/", tag: "War" },
-    { name: "Minecraft", url: "https://eaglercraft.com/play/?version=1.8.8", tag: "Sandbox" },
-    { name: "Capybara Clicker", url: "https://capybara-clicker.com/", tag: "Clicker" },
-    { name: "Block Blast", url: "https://games.engineering.com/blockblastgame/index.html", tag: "Arcade" }
-    
-];
+let sortMode="asc";
+let games=[];
 
-const list = document.getElementById("gameList");
-const frame = document.getElementById("frame");
-const search = document.getElementById("search");
-const canvas = document.getElementById("stars");
-const homeMsg = document.getElementById("homeMsg");
+const grid=document.getElementById("grid");
+const frame=document.getElementById("frame");
+const gameFrame=document.getElementById("gameFrame");
+const menu=document.getElementById("menu");
+const btn=document.getElementById("sortBtn");
 
-function renderGames(filter = "") {
-    list.innerHTML = "";
-    games
-        .filter(g => g.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(game => {
-            const div = document.createElement("div");
-            div.className = "game";
-            div.innerHTML = `<div class="game-title">${game.name}</div><div class="tag">${game.tag}</div>`;
-            div.onclick = () => loadGame(game.url);
-            list.appendChild(div);
-        });
+function toggleMenu(){menu.classList.toggle("active");}
+
+function setSort(mode){
+    sortMode=mode;
+    btn.innerText = mode==='asc' ? 'A-Z' : 'Z-A';
+    menu.classList.remove("active");
+    render(games);
 }
 
-function goHome() {
-    frame.src = "";
-    canvas.classList.remove("hidden");
-    homeMsg.style.display = "block";
+function sortGames(list){
+    return [...list].sort((a,b)=>
+        sortMode==='asc'
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name)
+    );
 }
 
-function loadGame(url) {
-    frame.src = url;
-    canvas.classList.add("hidden");
-    homeMsg.style.display = "none";
+function render(list){
+    grid.innerHTML="";
+    sortGames(list).forEach(g=>{
+        const c=document.createElement("div");
+        c.className="card";
+
+        c.innerHTML=`
+            <img src="${g.image || 'https://picsum.photos/300/300?random=' + Math.random()}">
+            <div class='title'>${g.name}</div>
+        `;
+
+        c.onclick=()=>openGame(g);
+        grid.appendChild(c);
+    });
 }
 
-search.addEventListener("input", e => renderGames(e.target.value));
-renderGames();
-
-/* 🌌 CONSTELLATION */
-const ctx = canvas.getContext("2d");
-let w, h;
-let particles = [];
-const mouse = { x: null, y: null };
-
-function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
+function openGame(game){
+    frame.src=game.url;
+    document.getElementById("gameTitle").innerText=game.name;
+    gameFrame.classList.add("active");
 }
-window.addEventListener("resize", resize);
-resize();
 
-window.addEventListener("mousemove", e => {
-    mouse.x = e.x;
-    mouse.y = e.y;
+function closeGame(){
+    gameFrame.classList.remove("active");
+    frame.src="";
+}
+
+function toggleFullscreen(){
+    const el=document.querySelector(".game-ui");
+    if(!document.fullscreenElement){
+        el.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+document.getElementById("search").addEventListener("input",e=>{
+    const v=e.target.value.toLowerCase();
+    render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * w;
-        this.y = Math.random() * h;
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.vy = (Math.random() - 0.5) * 0.8;
-        this.size = 2;
-    }
-    move() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0 || this.x > w) this.vx *= -1;
-        if (this.y < 0 || this.y > h) this.vy *= -1;
-
-        let dx = mouse.x - this.x;
-        let dy = mouse.y - this.y;
-        let dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < 150) {
-            this.x += dx * 0.02;
-            this.y += dy * 0.02;
-        }
-    }
-    draw() {
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-function init() {
-    particles = [];
-    for (let i = 0; i < 80; i++) particles.push(new Particle());
-}
-
-function connect() {
-    for (let i = 0; i < particles.length; i++) {
-        for (let j = i; j < particles.length; j++) {
-            let dx = particles[i].x - particles[j].x;
-            let dy = particles[i].y - particles[j].y;
-            let dist = Math.sqrt(dx*dx + dy*dy);
-
-            if (dist < 130) {
-                ctx.strokeStyle = `rgba(124,58,237,${1 - dist/130})`;
-                ctx.beginPath();
-                ctx.moveTo(particles[i].x, particles[i].y);
-                ctx.lineTo(particles[j].x, particles[j].y);
-                ctx.stroke();
-            }
-        }
-    }
-}
-
-function animate() {
-    ctx.clearRect(0, 0, w, h);
-    particles.forEach(p => { p.move(); p.draw(); });
-    connect();
-    requestAnimationFrame(animate);
-}
-
-init();
-animate();
+/* 🔥 LOAD FROM games.json (BOT CONNECTS HERE) */
+fetch("games.json")
+.then(res=>res.json())
+.then(data=>{
+    games=data;
+    render(games);
+});
 </script>
 
 </body>
