@@ -27,18 +27,7 @@ body{
     flex-direction:column;
 }
 
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:
-        linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size:60px 60px;
-    opacity:0.2;
-    pointer-events:none;
-}
-
+/* HEADER */
 header{
     text-align:center;
     padding:40px 20px 10px;
@@ -62,7 +51,6 @@ h1{
     justify-content:center;
     gap:10px;
     margin-top:18px;
-    flex-wrap:wrap;
 }
 
 #search{
@@ -75,101 +63,36 @@ h1{
     outline:none;
 }
 
-.sort{
-    position:relative;
-}
-
-.sort-btn{
-    padding:12px 16px;
-    border-radius:999px;
-    border:none;
-    background:var(--panel);
-    color:white;
-    cursor:pointer;
-}
-
-.sort-menu{
-    position:absolute;
-    top:120%;
-    left:0;
-    width:120px;
-    background:#0f1118;
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:12px;
-    overflow:hidden;
-    opacity:0;
-    transform:translateY(-8px);
-    pointer-events:none;
-    transition:0.2s ease;
-    z-index:10;
-}
-
-.sort-menu.active{
-    opacity:1;
-    transform:translateY(0);
-    pointer-events:auto;
-}
-
-.sort-menu button{
-    width:100%;
-    padding:10px;
-    background:none;
-    border:none;
-    color:white;
-    cursor:pointer;
-}
-
-.sort-menu button:hover{
-    background:rgba(255,255,255,0.08);
-}
-
-/* 🎮 GRID (REAL FIX) */
+/* GRID (CLEAN + STABLE) */
 .grid{
     flex:1;
-    min-height:0;
+    overflow-y:auto;
     display:grid;
-
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-
-    /* real separation */
-    gap:55px;
-
-    /* breathing room so rows don't feel stacked */
-    padding:90px 60px 140px;
-
+    gap:30px;
+    padding:60px 50px;
     max-width:1100px;
     margin:0 auto;
-
-    overflow-y:auto;
-
     align-content:start;
-    justify-content:center;
-
-    row-gap:80px;
 }
 
-/* 🎮 CARD (FIX FOR “FUSING LOOK”) */
 .card{
+    width:100%;
     aspect-ratio:1/1;
     border-radius:16px;
     overflow:hidden;
-    position:relative;
     cursor:pointer;
+    position:relative;
 
-    background:var(--panel);
+    background:#111522;
     border:1px solid rgba(255,255,255,0.06);
 
     transition:0.25s ease;
-
-    /* IMPORTANT: prevents visual blending */
-    contain: paint;
-    will-change: transform;
-
-    box-shadow: 0 10px 28px rgba(0,0,0,0.5);
 }
 
 .card:hover{
-    transform:translateY(-6px) scale(1.03);
+    transform:scale(1.05);
+    box-shadow:0 10px 25px rgba(0,0,0,0.5);
 }
 
 .card img{
@@ -187,58 +110,62 @@ h1{
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 }
 
-/* 🎮 GAME VIEW */
-#gameFrame{
+/* =========================
+   🎮 NEW GAME OVERLAY
+========================= */
+
+#gameOverlay{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,0.95);
+    background:rgba(0,0,0,0.92);
     display:none;
     align-items:center;
     justify-content:center;
-    z-index:100;
+    z-index:999;
 }
 
-#gameFrame.active{display:flex;}
-
-.game-ui{
-    width:96%;
-    height:96%;
+/* main window */
+.gameWindow{
+    width:95%;
+    height:92%;
+    background:#0c0f18;
+    border-radius:18px;
+    overflow:hidden;
     display:flex;
     flex-direction:column;
-    border-radius:16px;
-    overflow:hidden;
-    background:#0b0d14;
-    box-shadow:0 0 40px rgba(0,0,0,0.8);
+    box-shadow:0 0 50px rgba(0,0,0,0.8);
 }
 
-.topbar{
+/* top bar */
+.gameTop{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:10px 14px;
-    background:linear-gradient(90deg, #111, #1a1d2a);
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    padding:12px 16px;
+    background:#151a2a;
+    border-bottom:1px solid rgba(255,255,255,0.06);
 }
 
-#gameTitle{
-    font-size:0.9rem;
-    color:#ccc;
+.gameTitle{
+    font-size:0.95rem;
+    color:#ddd;
 }
 
-.actions button{
+.gameBtns button{
     background:rgba(255,255,255,0.08);
     border:none;
     color:white;
-    margin-left:8px;
     padding:6px 10px;
     border-radius:8px;
     cursor:pointer;
+    margin-left:8px;
 }
 
-.actions button:hover{
+.gameBtns button:hover{
     background:rgba(255,255,255,0.2);
 }
 
+/* iframe area */
 iframe{
     flex:1;
     width:100%;
@@ -255,71 +182,45 @@ iframe{
 
     <div class="controls">
         <input id="search" placeholder="Search games..." />
-
-        <div class="sort">
-            <button class="sort-btn" id="sortBtn" onclick="toggleMenu()">A-Z</button>
-            <div class="sort-menu" id="menu">
-                <button onclick="setSort('asc')">A-Z</button>
-                <button onclick="setSort('desc')">Z-A</button>
-            </div>
-        </div>
     </div>
 </header>
 
 <div class="grid" id="grid"></div>
 
-<div id="gameFrame">
-    <div class="game-ui">
+<!-- 🎮 NEW OVERLAY -->
+<div id="gameOverlay">
+    <div class="gameWindow">
 
-        <div class="topbar">
-            <span id="gameTitle">Game</span>
-            <div class="actions">
-                <button onclick="toggleFullscreen()">⛶</button>
+        <div class="gameTop">
+            <div class="gameTitle" id="gameTitle">Game</div>
+
+            <div class="gameBtns">
+                <button onclick="fullscreen()">⛶</button>
                 <button onclick="closeGame()">✕</button>
             </div>
         </div>
 
         <iframe id="frame"></iframe>
-
     </div>
 </div>
 
 <script>
-let sortMode="asc";
 let games=[];
 
 const grid=document.getElementById("grid");
+const overlay=document.getElementById("gameOverlay");
 const frame=document.getElementById("frame");
-const gameFrame=document.getElementById("gameFrame");
-const menu=document.getElementById("menu");
-const btn=document.getElementById("sortBtn");
-
-function toggleMenu(){menu.classList.toggle("active");}
-
-function setSort(mode){
-    sortMode=mode;
-    btn.innerText = mode==='asc' ? 'A-Z' : 'Z-A';
-    menu.classList.remove("active");
-    render(games);
-}
-
-function sortGames(list){
-    return [...list].sort((a,b)=>
-        sortMode==='asc'
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name)
-    );
-}
+const title=document.getElementById("gameTitle");
 
 function render(list){
     grid.innerHTML="";
-    sortGames(list).forEach(g=>{
+    list.forEach(g=>{
         const c=document.createElement("div");
         c.className="card";
 
         c.innerHTML=`
             <img src="${g.image || 'https://picsum.photos/300/300?random=' + Math.random()}">
-            <div class='title'>${g.name}</div>
+            <div class="title">${g.name}</div>
         `;
 
         c.onclick=()=>openGame(g);
@@ -329,17 +230,17 @@ function render(list){
 
 function openGame(game){
     frame.src=game.url;
-    document.getElementById("gameTitle").innerText=game.name;
-    gameFrame.classList.add("active");
+    title.innerText=game.name;
+    overlay.style.display="flex";
 }
 
 function closeGame(){
-    gameFrame.classList.remove("active");
+    overlay.style.display="none";
     frame.src="";
 }
 
-function toggleFullscreen(){
-    const el=document.querySelector(".game-ui");
+function fullscreen(){
+    const el=document.querySelector(".gameWindow");
     if(!document.fullscreenElement){
         el.requestFullscreen();
     } else {
@@ -347,13 +248,15 @@ function toggleFullscreen(){
     }
 }
 
+/* search */
 document.getElementById("search").addEventListener("input",e=>{
     const v=e.target.value.toLowerCase();
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
+/* load json */
 fetch("games.json")
-.then(res=>res.json())
+.then(r=>r.json())
 .then(data=>{
     games=data;
     render(games);
