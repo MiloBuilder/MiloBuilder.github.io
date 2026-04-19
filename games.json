@@ -438,5 +438,10 @@
     "name": "2048",
     "url": "https://play2048.co/",
     "image": "https://imgs.crazygames.com/games/2048/cover_1x1-1707828857318.png?format=auto&quality=70&metadata=none"
+  },
+  {
+    "name": "Bubble Shooter",
+    "url": "https://cdn.bubbleshooter.net/games/bubble-shooter/",
+    "image": "https://www.bubbleshooter.net/cdn-cgi/image/quality=85,width=320,height=320,fit=cover,f=auto/bubble-shooter-thumb.png"
   }
 ]
