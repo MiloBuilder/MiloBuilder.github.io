@@ -448,5 +448,10 @@
     "name": "Cut The Rope",
     "url": "https://lagged.com/games/secure/cut-the-rope-196476/",
     "image": "https://imgs.crazygames.com/cut-the-rope-ebx_1x1/20240530085010/cut-the-rope-ebx_1x1-cover?format=auto&quality=100&metadata=none&width=1200"
+  },
+  {
+    "name": "Pac-Man",
+    "url": "https://freepacman.org/",
+    "image": "https://static.wikia.nocookie.net/pacman/images/5/5e/Pac_man_symbol_pacman_website.png/revision/latest/scale-to-width/360?cb=20221230141955"
   }
 ]
