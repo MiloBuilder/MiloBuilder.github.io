@@ -17,25 +17,37 @@ body{
     background:#05060a;
     height:100vh;
     overflow:hidden;
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
-/* ⭐ BACKGROUND */
+/* ⭐ STAR BACKGROUND */
 #bg{
     position:fixed;
     inset:0;
     z-index:-1;
     background:radial-gradient(circle at center, #0b0d14, #05060a);
+    overflow:hidden;
 }
 
-/* ⭐ MAIN CONTAINER */
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:0.6;
+}
+
+/* ⭐ LEFT FLOATING WINDOW */
 .container{
+    position:absolute;
+    left:60px;
+    top:50%;
+    transform:translateY(-50%);
+
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:20px;
+    align-items:flex-start;
+    gap:15px;
 }
 
 /* 🌫️ GLASS BOX */
@@ -47,30 +59,23 @@ body{
     box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* TOP BIG BOX */
+/* SMALLER TOP BOX */
 .top-box{
-    width:420px;
-    height:140px;
+    width:260px;
+    height:90px;
 }
 
-/* SMALL BOX BELOW */
-.small-box{
-    width:280px;
-    height:70px;
-}
-
-/* 🎮 BUTTON ROW */
+/* BUTTON ROW */
 .buttons{
     display:flex;
-    gap:18px;
-    margin-top:10px;
+    gap:12px;
 }
 
 /* BUTTON STYLE */
 .btn{
-    width:55px;
-    height:55px;
-    border-radius:16px;
+    width:50px;
+    height:50px;
+    border-radius:14px;
     border:none;
     cursor:pointer;
 
@@ -84,23 +89,23 @@ body{
     transition:0.2s;
 }
 
-/* SOFT ICON COLOR */
+/* ICON */
 .btn img{
     width:60%;
     height:60%;
     object-fit:contain;
-
     filter: grayscale(1) brightness(1.8) opacity(0.8);
 }
 
-/* HOVER */
 .btn:hover{
     background:rgba(255,255,255,0.15);
     transform:scale(1.08);
 }
 
-.btn:hover img{
-    filter: grayscale(0) brightness(1.2) opacity(1);
+/* SMALL BOTTOM BOX */
+.small-box{
+    width:200px;
+    height:60px;
 }
 </style>
 </head>
@@ -111,20 +116,42 @@ body{
 
 <div class="container">
 
-    <!-- 🔲 TOP TEXT BOX -->
     <div class="glass top-box"></div>
 
-    <!-- 🔘 BUTTONS -->
     <div class="buttons">
         <button class="btn"><img src="icon1.png"></button>
         <button class="btn"><img src="icon2.png"></button>
         <button class="btn"><img src="icon3.png"></button>
     </div>
 
-    <!-- 🔲 SMALL BOX -->
     <div class="glass small-box"></div>
 
 </div>
+
+<script>
+/* ⭐ STARS */
+const bg = document.getElementById("bg");
+const stars = [];
+
+for(let i=0;i<120;i++){
+    let s = document.createElement("div");
+    s.className = "star";
+    s.style.left = Math.random()*100 + "vw";
+    s.style.top = Math.random()*100 + "vh";
+    bg.appendChild(s);
+    stars.push(s);
+}
+
+/* ⭐ subtle mouse movement */
+document.addEventListener("mousemove",(e)=>{
+    let x = (e.clientX/window.innerWidth - 0.5)*15;
+    let y = (e.clientY/window.innerHeight - 0.5)*15;
+
+    stars.forEach((s,i)=>{
+        s.style.transform = `translate(${x*(i%3)}px, ${y*(i%3)}px)`;
+    });
+});
+</script>
 
 </body>
 </html>
