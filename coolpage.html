@@ -37,20 +37,13 @@ body{
     opacity:0.6;
 }
 
-/* CENTER LAYOUT */
-.container{
+/* BIG WINDOW (CENTER) */
+.window{
     position:absolute;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-}
 
-/* BIG WINDOW */
-.window{
     width:260px;
     height:120px;
 
@@ -80,9 +73,14 @@ body{
     opacity:0.7;
 }
 
-/* BUTTON WINDOW (behind buttons) */
+/* ⭐ BUTTON TOWER (LEFT MIDDLE) */
 .button-window{
-    padding:12px 16px;
+    position:absolute;
+    left:40px;
+    top:50%;
+    transform:translateY(-50%);
+
+    padding:14px;
     background:rgba(255,255,255,0.06);
     backdrop-filter:blur(20px);
     border-radius:18px;
@@ -90,12 +88,14 @@ body{
     box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* BUTTONS */
+/* STACKED BUTTONS */
 .buttons{
     display:flex;
+    flex-direction:column; /* 👈 tower effect */
     gap:12px;
 }
 
+/* BUTTON STYLE */
 .btn{
     width:50px;
     height:50px;
@@ -120,23 +120,19 @@ body{
 
 <div id="bg"></div>
 
-<div class="container">
+<!-- BIG WINDOW -->
+<div class="window">
+    <div class="title">edit</div>
+    <div class="sub">OMFGHG</div>
+</div>
 
-    <!-- BIG WINDOW -->
-    <div class="window">
-        <div class="title">edit</div>
-        <div class="sub">OMFGHG</div>
+<!-- LEFT BUTTON TOWER -->
+<div class="button-window">
+    <div class="buttons">
+        <button class="btn"></button>
+        <button class="btn"></button>
+        <button class="btn"></button>
     </div>
-
-    <!-- BUTTON WINDOW -->
-    <div class="button-window">
-        <div class="buttons">
-            <button class="btn">sa</button>
-            <button class="btn"></button>
-            <button class="btn"></button>
-        </div>
-    </div>
-
 </div>
 
 <script>
