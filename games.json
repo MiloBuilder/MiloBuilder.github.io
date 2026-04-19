@@ -453,5 +453,10 @@
     "name": "Pac-Man",
     "url": "https://freepacman.org/",
     "image": "https://static.wikia.nocookie.net/pacman/images/5/5e/Pac_man_symbol_pacman_website.png/revision/latest/scale-to-width/360?cb=20221230141955"
+  },
+  {
+    "name": "Flappy Bird",
+    "url": "https://freeflappybird.org/",
+    "image": "https://upload.wikimedia.org/wikipedia/en/0/0a/Flappy_Bird_icon.png"
   }
 ]
