@@ -433,5 +433,10 @@
     "name": "Drift Hunters",
     "url": "https://www.drifted.com/gameframe/39225/",
     "image": "https://drifthunters2.io/data/image/favicon.png"
+  },
+  {
+    "name": "2048",
+    "url": "https://play2048.co/",
+    "image": "https://imgs.crazygames.com/games/2048/cover_1x1-1707828857318.png?format=auto&quality=70&metadata=none"
   }
 ]
