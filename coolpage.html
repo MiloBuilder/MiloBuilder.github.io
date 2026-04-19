@@ -17,6 +17,9 @@ body{
     background:#05060a;
     height:100vh;
     overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 /* ⭐ BACKGROUND */
@@ -27,28 +30,52 @@ body{
     background:radial-gradient(circle at center, #0b0d14, #05060a);
 }
 
-/* ⭐ TOP-LEFT BUTTON CLUSTER */
-.corner-buttons{
-    position:fixed;
-    top:15px;
-    left:15px;
-
+/* ⭐ MAIN CONTAINER */
+.container{
     display:flex;
     flex-direction:column;
-    gap:10px;
+    align-items:center;
+    gap:20px;
+}
+
+/* 🌫️ GLASS BOX */
+.glass{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+}
+
+/* TOP BIG BOX */
+.top-box{
+    width:420px;
+    height:140px;
+}
+
+/* SMALL BOX BELOW */
+.small-box{
+    width:280px;
+    height:70px;
+}
+
+/* 🎮 BUTTON ROW */
+.buttons{
+    display:flex;
+    gap:18px;
+    margin-top:10px;
 }
 
 /* BUTTON STYLE */
 .btn{
-    width:48px;
-    height:48px;
-
-    border-radius:12px;
+    width:55px;
+    height:55px;
+    border-radius:16px;
     border:none;
     cursor:pointer;
 
     background:rgba(255,255,255,0.08);
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(10px);
 
     display:flex;
     align-items:center;
@@ -57,17 +84,23 @@ body{
     transition:0.2s;
 }
 
-.btn:hover{
-    background:rgba(255,255,255,0.15);
-    transform:scale(1.05);
-}
-
-/* IMAGE */
+/* SOFT ICON COLOR */
 .btn img{
     width:60%;
     height:60%;
     object-fit:contain;
-    pointer-events:none;
+
+    filter: grayscale(1) brightness(1.8) opacity(0.8);
+}
+
+/* HOVER */
+.btn:hover{
+    background:rgba(255,255,255,0.15);
+    transform:scale(1.08);
+}
+
+.btn:hover img{
+    filter: grayscale(0) brightness(1.2) opacity(1);
 }
 </style>
 </head>
@@ -76,19 +109,21 @@ body{
 
 <div id="bg"></div>
 
-<!-- 🔲 CORNER BUTTONS -->
-<div class="corner-buttons">
-    <button class="btn">
-        <img src="icon1.png">
-    </button>
+<div class="container">
 
-    <button class="btn">
-        <img src="icon2.png">
-    </button>
+    <!-- 🔲 TOP TEXT BOX -->
+    <div class="glass top-box"></div>
 
-    <button class="btn">
-        <img src="icon3.png">
-    </button>
+    <!-- 🔘 BUTTONS -->
+    <div class="buttons">
+        <button class="btn"><img src="icon1.png"></button>
+        <button class="btn"><img src="icon2.png"></button>
+        <button class="btn"><img src="icon3.png"></button>
+    </div>
+
+    <!-- 🔲 SMALL BOX -->
+    <div class="glass small-box"></div>
+
 </div>
 
 </body>
