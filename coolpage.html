@@ -15,7 +15,6 @@
 body{
     font-family: ui-sans-serif, system-ui;
     background:#05060a;
-    color:white;
     height:100vh;
     overflow:hidden;
 }
@@ -26,61 +25,45 @@ body{
     inset:0;
     z-index:-1;
     background:radial-gradient(circle at center, #0b0d14, #05060a);
-    overflow:hidden;
 }
 
-.star{
-    position:absolute;
-    width:2px;
-    height:2px;
-    background:white;
-    border-radius:50%;
-    opacity:0.6;
-}
-
-/* SIDEBAR */
-.sidebar{
+/* ⭐ TOP-LEFT BUTTON CLUSTER */
+.corner-buttons{
     position:fixed;
-    left:0;
-    top:0;
-    height:100%;
-    width:80px;
+    top:15px;
+    left:15px;
 
     display:flex;
     flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:20px;
-
-    background:rgba(255,255,255,0.05);
-    backdrop-filter:blur(10px);
-    border-right:1px solid rgba(255,255,255,0.08);
+    gap:10px;
 }
 
-/* BUTTONS */
-.side-btn{
-    width:50px;
-    height:50px;
+/* BUTTON STYLE */
+.btn{
+    width:48px;
+    height:48px;
 
-    border-radius:14px;
+    border-radius:12px;
     border:none;
     cursor:pointer;
 
     background:rgba(255,255,255,0.08);
-    transition:0.2s;
+    backdrop-filter:blur(8px);
 
     display:flex;
     align-items:center;
     justify-content:center;
+
+    transition:0.2s;
 }
 
-.side-btn:hover{
+.btn:hover{
     background:rgba(255,255,255,0.15);
     transform:scale(1.05);
 }
 
-/* IMAGE INSIDE BUTTON */
-.side-btn img{
+/* IMAGE */
+.btn img{
     width:60%;
     height:60%;
     object-fit:contain;
@@ -93,33 +76,20 @@ body{
 
 <div id="bg"></div>
 
-<!-- LEFT SIDEBAR -->
-<div class="sidebar">
-    <button class="side-btn">
+<!-- 🔲 CORNER BUTTONS -->
+<div class="corner-buttons">
+    <button class="btn">
         <img src="icon1.png">
     </button>
 
-    <button class="side-btn">
+    <button class="btn">
         <img src="icon2.png">
     </button>
 
-    <button class="side-btn">
+    <button class="btn">
         <img src="icon3.png">
     </button>
 </div>
-
-<script>
-/* ⭐ STARS */
-const bg=document.getElementById("bg");
-
-for(let i=0;i<120;i++){
-    let s=document.createElement("div");
-    s.className="star";
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
-    bg.appendChild(s);
-}
-</script>
 
 </body>
 </html>
