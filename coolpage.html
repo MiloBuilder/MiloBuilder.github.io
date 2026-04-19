@@ -37,41 +37,65 @@ body{
     opacity:0.6;
 }
 
-/* ⭐ LEFT FLOATING WINDOW */
+/* CENTER LAYOUT */
 .container{
     position:absolute;
-    left:60px;
+    left:50%;
     top:50%;
-    transform:translateY(-50%);
+    transform:translate(-50%,-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+}
+
+/* BIG WINDOW */
+.window{
+    width:260px;
+    height:120px;
+
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.1);
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
 
     display:flex;
     flex-direction:column;
-    align-items:flex-start;
-    gap:15px;
+    justify-content:center;
+    align-items:center;
+
+    color:white;
+    font-weight:600;
 }
 
-/* 🌫️ GLASS BOX */
-.glass{
+.window .title{
+    font-size:20px;
+    letter-spacing:2px;
+}
+
+.window .sub{
+    margin-top:6px;
+    font-size:12px;
+    opacity:0.7;
+}
+
+/* BUTTON WINDOW (behind buttons) */
+.button-window{
+    padding:12px 16px;
     background:rgba(255,255,255,0.06);
     backdrop-filter:blur(20px);
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.08);
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,0.1);
     box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-/* SMALLER TOP BOX */
-.top-box{
-    width:260px;
-    height:90px;
-}
-
-/* BUTTON ROW */
+/* BUTTONS */
 .buttons{
     display:flex;
     gap:12px;
 }
 
-/* BUTTON STYLE */
 .btn{
     width:50px;
     height:50px;
@@ -82,30 +106,12 @@ body{
     background:rgba(255,255,255,0.08);
     backdrop-filter:blur(10px);
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
     transition:0.2s;
 }
 
-/* ICON */
-.btn img{
-    width:60%;
-    height:60%;
-    object-fit:contain;
-    filter: grayscale(1) brightness(1.8) opacity(0.8);
-}
-
 .btn:hover{
+    transform:scale(1.1);
     background:rgba(255,255,255,0.15);
-    transform:scale(1.08);
-}
-
-/* SMALL BOTTOM BOX */
-.small-box{
-    width:200px;
-    height:60px;
 }
 </style>
 </head>
@@ -116,41 +122,36 @@ body{
 
 <div class="container">
 
-    <div class="glass top-box"></div>
-
-    <div class="buttons">
-        <button class="btn"><img src="icon1.png"></button>
-        <button class="btn"><img src="icon2.png"></button>
-        <button class="btn"><img src="icon3.png"></button>
+    <!-- BIG WINDOW -->
+    <div class="window">
+        <div class="title">edit</div>
+        <div class="sub">OMFGHG</div>
     </div>
 
-    <div class="glass small-box"></div>
+    <!-- BUTTON WINDOW -->
+    <div class="button-window">
+        <div class="buttons">
+            <button class="btn"></button>
+            <button class="btn"></button>
+            <button class="btn"></button>
+        </div>
+    </div>
 
 </div>
 
 <script>
 /* ⭐ STARS */
-const bg = document.getElementById("bg");
-const stars = [];
+const bg=document.getElementById("bg");
+const stars=[];
 
 for(let i=0;i<120;i++){
-    let s = document.createElement("div");
-    s.className = "star";
-    s.style.left = Math.random()*100 + "vw";
-    s.style.top = Math.random()*100 + "vh";
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
     bg.appendChild(s);
     stars.push(s);
 }
-
-/* ⭐ subtle mouse movement */
-document.addEventListener("mousemove",(e)=>{
-    let x = (e.clientX/window.innerWidth - 0.5)*15;
-    let y = (e.clientY/window.innerHeight - 0.5)*15;
-
-    stars.forEach((s,i)=>{
-        s.style.transform = `translate(${x*(i%3)}px, ${y*(i%3)}px)`;
-    });
-});
 </script>
 
 </body>
