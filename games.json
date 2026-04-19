@@ -443,5 +443,10 @@
     "name": "Bubble Shooter",
     "url": "https://cdn.bubbleshooter.net/games/bubble-shooter/",
     "image": "https://www.bubbleshooter.net/cdn-cgi/image/quality=85,width=320,height=320,fit=cover,f=auto/bubble-shooter-thumb.png"
+  },
+  {
+    "name": "Cut The Rope",
+    "url": "https://lagged.com/games/secure/cut-the-rope-196476/",
+    "image": "https://imgs.crazygames.com/cut-the-rope-ebx_1x1/20240530085010/cut-the-rope-ebx_1x1-cover?format=auto&quality=100&metadata=none&width=1200"
   }
 ]
