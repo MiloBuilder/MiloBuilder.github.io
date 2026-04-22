@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,12 +30,14 @@ body{
     background:white;
     border-radius:50%;
     opacity:0.5;
+    transition:transform 0.1s ease;
 }
 
 /* HEADER */
 header{
     text-align:center;
-    padding:30px 20px;
+    padding:30px;
+    backdrop-filter:blur(10px);
 }
 
 h1{
@@ -42,9 +45,13 @@ h1{
     background:linear-gradient(90deg,#fff,#8b5cf6,#22d3ee);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
+    text-shadow:0 0 20px rgba(139,92,246,0.4);
 }
 
 .controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
     margin-top:15px;
 }
 
@@ -55,7 +62,15 @@ h1{
     border:none;
     background:rgba(255,255,255,0.08);
     color:white;
-    outline:none;
+}
+
+button{
+    padding:10px 16px;
+    border-radius:999px;
+    border:none;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    cursor:pointer;
 }
 
 /* GRID */
@@ -69,6 +84,10 @@ h1{
     padding:40px;
 }
 
+/* PURPLE SCROLL */
+.grid::-webkit-scrollbar{width:10px;}
+.grid::-webkit-scrollbar-thumb{background:#8b5cf6;border-radius:10px;}
+
 /* CARD */
 .card{
     width:160px;
@@ -78,16 +97,15 @@ h1{
     position:relative;
     cursor:pointer;
     background:rgba(255,255,255,0.05);
-    border:1px solid rgba(255,255,255,0.08);
     transition:0.2s;
 }
 
 .card:hover{
     transform:translateY(-5px) scale(1.04);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
+    box-shadow:0 10px 25px rgba(0,0,0,0.6),0 0 15px rgba(139,92,246,0.3);
 }
 
-.card img{
+.card img,.card video{
     width:100%;
     height:100%;
     object-fit:cover;
@@ -98,7 +116,6 @@ h1{
     bottom:0;
     width:100%;
     padding:8px;
-    font-size:0.85rem;
     background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
 }
 
@@ -109,6 +126,13 @@ h1{
     right:8px;
     font-size:18px;
     cursor:pointer;
+    transition:0.2s;
+}
+
+.fav.active{
+    color:#facc15;
+    text-shadow:0 0 10px #facc15;
+    transform:scale(1.2);
 }
 
 /* OVERLAY */
@@ -134,15 +158,25 @@ h1{
 .topbar{
     display:flex;
     justify-content:space-between;
-    padding:10px 15px;
+    padding:10px;
     background:#151a2a;
 }
 
-iframe{
-    flex:1;
-    width:100%;
+.close-btn{
+    width:34px;
+    height:34px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.08);
+    color:white;
     border:none;
+    cursor:pointer;
 }
+
+.close-btn:hover{
+    background:#ef4444;
+}
+
+iframe{flex:1;width:100%;border:none;}
 </style>
 </head>
 
@@ -152,9 +186,9 @@ iframe{
 
 <header>
     <h1>Galactic Games</h1>
-
     <div class="controls">
         <input id="search" placeholder="Search games...">
+        <button id="sortBtn" onclick="toggleSort()">A-Z</button>
     </div>
 </header>
 
@@ -164,7 +198,7 @@ iframe{
     <div class="window">
         <div class="topbar">
             <div id="title">Game</div>
-            <button onclick="closeGame()">✕</button>
+            <button class="close-btn" onclick="closeGame()">✕</button>
         </div>
         <iframe id="frame"></iframe>
     </div>
@@ -172,6 +206,7 @@ iframe{
 
 <script>
 let games=[];
+let sort="asc";
 
 const grid=document.getElementById("grid");
 const overlay=document.getElementById("overlay");
@@ -183,22 +218,28 @@ function getFavs(){
     return JSON.parse(localStorage.getItem("favs"))||[];
 }
 
-function saveFavs(f){
-    localStorage.setItem("favs",JSON.stringify(f));
-}
+function saveFavs(f){localStorage.setItem("favs",JSON.stringify(f));}
 
 function toggleFav(e,name){
     e.stopPropagation();
+    let f=getFavs();
+    if(f.includes(name)) f=f.filter(x=>x!==name);
+    else f.push(name);
+    saveFavs(f);
+    render(games);
+}
 
-    let favs=getFavs();
+/* SORT */
+function toggleSort(){
+    sort = sort==="asc"?"desc":"asc";
+    sortBtn.innerText = sort==="asc"?"A-Z":"Z-A";
 
-    if(favs.includes(name)){
-        favs=favs.filter(f=>f!==name);
-    } else {
-        favs.push(name);
-    }
+    games.sort((a,b)=>
+        sort==="asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name)
+    );
 
-    saveFavs(favs);
     render(games);
 }
 
@@ -207,15 +248,28 @@ function render(list){
     grid.innerHTML="";
     let favs=getFavs();
 
+    // favorites first
+    list=[...list].sort((a,b)=>favs.includes(b.name)-favs.includes(a.name));
+
     list.forEach(g=>{
         let c=document.createElement("div");
         c.className="card";
 
+        let media = g.video
+            ? `<video src="${g.video}" muted loop></video>`
+            : `<img src="${g.image || 'https://picsum.photos/300?random='+Math.random()}">`;
+
         c.innerHTML=`
-            <img src="${g.image || 'https://picsum.photos/300?random='+Math.random()}">
+            ${media}
             <div class="title">${g.name}</div>
-            <div class="fav">${favs.includes(g.name)?"⭐":"☆"}</div>
+            <div class="fav ${favs.includes(g.name)?"active":""}">★</div>
         `;
+
+        let vid=c.querySelector("video");
+        if(vid){
+            c.onmouseenter=()=>vid.play();
+            c.onmouseleave=()=>vid.pause();
+        }
 
         c.onclick=()=>openGame(g);
         c.querySelector(".fav").onclick=(e)=>toggleFav(e,g.name);
@@ -237,12 +291,12 @@ function closeGame(){
 }
 
 /* SEARCH */
-document.getElementById("search").addEventListener("input",e=>{
+search.addEventListener("input",e=>{
     let v=e.target.value.toLowerCase();
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD GAMES.JSON */
+/* LOAD */
 fetch("games.json")
 .then(r=>r.json())
 .then(d=>{
@@ -252,6 +306,7 @@ fetch("games.json")
 
 /* STARS */
 const bg=document.getElementById("bg");
+const stars=[];
 
 for(let i=0;i<120;i++){
     let s=document.createElement("div");
@@ -259,7 +314,17 @@ for(let i=0;i<120;i++){
     s.style.left=Math.random()*100+"vw";
     s.style.top=Math.random()*100+"vh";
     bg.appendChild(s);
+    stars.push(s);
 }
+
+document.addEventListener("mousemove",(e)=>{
+    let x=(e.clientX/window.innerWidth-0.5)*20;
+    let y=(e.clientY/window.innerHeight-0.5)*20;
+
+    stars.forEach((s,i)=>{
+        s.style.transform=`translate(${x*(i%3)}px,${y*(i%3)}px)`;
+    });
+});
 </script>
 
 </body>
