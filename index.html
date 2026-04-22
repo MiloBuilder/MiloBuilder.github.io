@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,6 +19,48 @@ body{
     color:white;
     height:100vh;
     overflow:hidden;
+}
+
+/* 🔐 LOGIN SCREEN */
+#loginScreen{
+    position:fixed;
+    inset:0;
+    background:#05060a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.loginBox{
+    background:#0c0f18;
+    padding:30px;
+    border-radius:16px;
+    text-align:center;
+    box-shadow:0 0 40px rgba(139,92,246,0.3);
+}
+
+.loginBox h2{
+    margin-bottom:10px;
+}
+
+.loginBox input{
+    padding:12px;
+    width:220px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,0.1);
+    color:white;
+    outline:none;
+}
+
+.loginBox button{
+    margin-top:12px;
+}
+
+#errorMsg{
+    color:#ff4d4d;
+    margin-top:8px;
 }
 
 /* ⭐ STAR BACKGROUND */
@@ -84,31 +127,20 @@ button{
     color:white;
 }
 
-/* =========================
-   GRID (FIXED — NO FUSING)
-========================= */
+/* GRID */
 .grid{
     height:calc(100vh - 160px);
     overflow-y:auto;
-
     display:grid;
     grid-template-columns: repeat(auto-fill, 160px);
     justify-content:center;
-
     gap:28px;
-
     padding:60px;
-
     align-content:start;
 }
 
-/* 🟣 PURPLE SCROLLBAR */
 .grid::-webkit-scrollbar{
     width:10px;
-}
-
-.grid::-webkit-scrollbar-track{
-    background:transparent;
 }
 
 .grid::-webkit-scrollbar-thumb{
@@ -120,30 +152,23 @@ button{
 .card{
     width:160px;
     height:160px;
-
     border-radius:16px;
     overflow:hidden;
     position:relative;
     cursor:pointer;
-
     background:rgba(255,255,255,0.06);
     border:1px solid rgba(255,255,255,0.1);
-
     transition:0.2s;
-
-    isolation:isolate;
 }
 
 .card:hover{
     transform:scale(1.05);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
 }
 
 .card img{
     width:100%;
     height:100%;
     object-fit:cover;
-    display:block;
 }
 
 .title{
@@ -163,7 +188,6 @@ button{
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,0.85);
-    backdrop-filter:blur(10px);
 }
 
 .window{
@@ -193,6 +217,17 @@ iframe{
 
 <body>
 
+<!-- 🔐 LOGIN -->
+<div id="loginScreen">
+    <div class="loginBox">
+        <h2>Enter Password</h2>
+        <input type="password" id="passwordInput" placeholder="Password">
+        <br>
+        <button onclick="checkPassword()">Enter</button>
+        <p id="errorMsg"></p>
+    </div>
+</div>
+
 <div id="bg"></div>
 
 <header>
@@ -209,17 +244,33 @@ iframe{
 
 <div id="overlay">
     <div class="window">
-
         <div class="topbar">
             <div id="title">Game</div>
             <button onclick="closeGame()">✕</button>
         </div>
-
         <iframe id="frame"></iframe>
     </div>
 </div>
 
 <script>
+/* 🔐 PASSWORD */
+const correctPassword = "1234";
+
+function checkPassword(){
+    const input = document.getElementById("passwordInput").value;
+
+    if(input === correctPassword){
+        document.getElementById("loginScreen").style.display = "none";
+    } else {
+        document.getElementById("errorMsg").innerText = "Wrong password!";
+    }
+}
+
+/* ENTER KEY SUPPORT */
+document.getElementById("passwordInput").addEventListener("keydown", e=>{
+    if(e.key === "Enter") checkPassword();
+});
+
 let games=[];
 let sort="asc";
 
@@ -241,7 +292,6 @@ for(let i=0;i<120;i++){
     stars.push(s);
 }
 
-/* ⭐ MOUSE MOVE EFFECT */
 document.addEventListener("mousemove",(e)=>{
     let x=(e.clientX/window.innerWidth - 0.5)*20;
     let y=(e.clientY/window.innerHeight - 0.5)*20;
@@ -280,15 +330,10 @@ function closeGame(){
     frame.src="";
 }
 
-/* 🔤 OLD STYLE A-Z TOGGLE */
+/* SORT */
 function toggleSort(){
-    if(sort === "asc"){
-        sort = "desc";
-        document.getElementById("sortBtn").innerText = "Z-A";
-    } else {
-        sort = "asc";
-        document.getElementById("sortBtn").innerText = "A-Z";
-    }
+    sort = sort === "asc" ? "desc" : "asc";
+    document.getElementById("sortBtn").innerText = sort === "asc" ? "A-Z" : "Z-A";
 
     games.sort((a,b)=>{
         return sort === "asc"
