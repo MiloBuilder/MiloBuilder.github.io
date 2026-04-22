@@ -6,27 +6,59 @@
 <title>Galactic Games</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-    font-family: ui-sans-serif, system-ui;
+    font-family:ui-sans-serif,system-ui;
     background:#05060a;
     color:white;
     height:100vh;
     overflow:hidden;
 }
 
-/* ⭐ STAR BACKGROUND */
+/* AUTH */
+#authScreen{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#05060a;
+    z-index:9999;
+}
+
+.authBox{
+    background:rgba(12,15,24,0.85);
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    backdrop-filter:blur(20px);
+    width:280px;
+    box-shadow:0 0 40px rgba(139,92,246,0.2);
+}
+
+.authBox input{
+    width:100%;
+    padding:12px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:10px;
+    background:rgba(255,255,255,0.1);
+    color:white;
+}
+
+.authButtons{
+    display:flex;
+    gap:10px;
+}
+
+#authMsg{margin-top:10px;color:#f87171;}
+
+/* BG */
 #bg{
     position:fixed;
     inset:0;
     z-index:-1;
-    background:radial-gradient(circle at center, #0b0d14, #05060a);
-    overflow:hidden;
 }
 
 .star{
@@ -36,7 +68,6 @@ body{
     background:white;
     border-radius:50%;
     opacity:0.6;
-    transition:transform 0.15s ease;
 }
 
 /* HEADER */
@@ -47,14 +78,9 @@ header{
 
 h1{
     font-size:3rem;
-    background: linear-gradient(90deg,#fff,#8b5cf6,#22d3ee);
+    background:linear-gradient(90deg,#fff,#8b5cf6,#22d3ee);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
-}
-
-.subtitle{
-    color:#aaa;
-    margin-top:6px;
 }
 
 /* CONTROLS */
@@ -62,88 +88,46 @@ h1{
     display:flex;
     justify-content:center;
     gap:10px;
-    margin-top:15px;
 }
 
-#search{
-    padding:12px 16px;
+input{
+    padding:12px;
     border-radius:999px;
     border:none;
-    width:250px;
-    background:rgba(255,255,255,0.08);
-    color:white;
-    outline:none;
 }
 
-button{
-    padding:12px 16px;
-    border-radius:999px;
-    border:none;
-    cursor:pointer;
-    background:rgba(255,255,255,0.1);
-    color:white;
-}
-
-/* =========================
-   GRID (FIXED — NO FUSING)
-========================= */
+/* GRID */
 .grid{
-    height:calc(100vh - 160px);
+    height:calc(100vh - 140px);
     overflow-y:auto;
-
     display:grid;
-    grid-template-columns: repeat(auto-fill, 160px);
+    grid-template-columns:repeat(auto-fill,160px);
     justify-content:center;
-
-    gap:28px;
-
-    padding:60px;
-
-    align-content:start;
+    gap:25px;
+    padding:40px;
 }
 
-/* 🟣 PURPLE SCROLLBAR */
-.grid::-webkit-scrollbar{
-    width:10px;
-}
-
-.grid::-webkit-scrollbar-track{
-    background:transparent;
-}
-
-.grid::-webkit-scrollbar-thumb{
-    background:#8b5cf6;
-    border-radius:10px;
-}
-
-/* GAME CARD */
+/* CARD */
 .card{
     width:160px;
     height:160px;
-
-    border-radius:16px;
+    border-radius:18px;
     overflow:hidden;
     position:relative;
     cursor:pointer;
-
-    background:rgba(255,255,255,0.06);
-    border:1px solid rgba(255,255,255,0.1);
-
-    transition:0.2s;
-
-    isolation:isolate;
+    background:rgba(255,255,255,0.05);
+    transition:0.25s;
 }
 
 .card:hover{
-    transform:scale(1.05);
-    box-shadow:0 10px 25px rgba(0,0,0,0.6);
+    transform:translateY(-6px) scale(1.04);
+    box-shadow:0 0 20px rgba(139,92,246,0.5);
 }
 
 .card img{
     width:100%;
     height:100%;
     object-fit:cover;
-    display:block;
 }
 
 .title{
@@ -151,8 +135,15 @@ button{
     bottom:0;
     width:100%;
     padding:8px;
-    font-size:0.85rem;
     background:linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+/* FAVORITE */
+.fav{
+    position:absolute;
+    top:8px;
+    right:8px;
+    cursor:pointer;
 }
 
 /* OVERLAY */
@@ -163,7 +154,6 @@ button{
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,0.85);
-    backdrop-filter:blur(10px);
 }
 
 .window{
@@ -179,8 +169,7 @@ button{
 .topbar{
     display:flex;
     justify-content:space-between;
-    padding:10px 15px;
-    background:#151a2a;
+    padding:10px;
 }
 
 iframe{
@@ -193,15 +182,29 @@ iframe{
 
 <body>
 
+<!-- AUTH -->
+<div id="authScreen">
+    <div class="authBox">
+        <h2>Galactic Account</h2>
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+
+        <div class="authButtons">
+            <button onclick="signup()">Sign Up</button>
+            <button onclick="login()">Log In</button>
+        </div>
+
+        <p id="authMsg"></p>
+    </div>
+</div>
+
 <div id="bg"></div>
 
 <header>
     <h1>Galactic Games</h1>
-    <div class="subtitle">Launcher</div>
 
     <div class="controls">
-        <input id="search" placeholder="Search games..." />
-        <button id="sortBtn" onclick="toggleSort()">A-Z</button>
+        <input id="search" placeholder="Search games...">
     </div>
 </header>
 
@@ -209,66 +212,90 @@ iframe{
 
 <div id="overlay">
     <div class="window">
-
         <div class="topbar">
             <div id="title">Game</div>
             <button onclick="closeGame()">✕</button>
         </div>
-
         <iframe id="frame"></iframe>
     </div>
 </div>
 
 <script>
-let games=[];
-let sort="asc";
-
-const grid=document.getElementById("grid");
-const overlay=document.getElementById("overlay");
-const frame=document.getElementById("frame");
-const title=document.getElementById("title");
-
-/* ⭐ STARS */
-const bg=document.getElementById("bg");
-const stars=[];
-
-for(let i=0;i<120;i++){
-    let s=document.createElement("div");
-    s.className="star";
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
-    bg.appendChild(s);
-    stars.push(s);
+/* AUTH */
+if(localStorage.getItem("user")){
+    document.getElementById("authScreen").style.display="none";
 }
 
-/* ⭐ MOUSE MOVE EFFECT */
-document.addEventListener("mousemove",(e)=>{
-    let x=(e.clientX/window.innerWidth - 0.5)*20;
-    let y=(e.clientY/window.innerHeight - 0.5)*20;
+function signup(){
+    const u=username.value;
+    const p=password.value;
 
-    stars.forEach((s,i)=>{
-        s.style.transform=`translate(${x*(i%3)}px, ${y*(i%3)}px)`;
-    });
-});
+    if(!u || !p) return authMsg.innerText="Fill all fields";
+
+    localStorage.setItem("user_"+u,p);
+    authMsg.innerText="Account created!";
+}
+
+function login(){
+    const u=username.value;
+    const p=password.value;
+
+    if(localStorage.getItem("user_"+u)===p){
+        localStorage.setItem("user",u);
+        authScreen.style.display="none";
+    } else authMsg.innerText="Wrong login";
+}
+
+/* FAVORITES */
+function getFavs(){
+    return JSON.parse(localStorage.getItem("favs_"+localStorage.getItem("user")))||[];
+}
+
+function saveFavs(f){
+    localStorage.setItem("favs_"+localStorage.getItem("user"),JSON.stringify(f));
+}
+
+function toggleFav(e,name){
+    e.stopPropagation();
+    let f=getFavs();
+
+    if(f.includes(name)) f=f.filter(x=>x!==name);
+    else f.push(name);
+
+    saveFavs(f);
+    render(games);
+}
+
+/* DATA */
+let games=[
+    {name:"Game 1",url:"https://example.com"},
+    {name:"Game 2",url:"https://example.com"},
+    {name:"Game 3",url:"https://example.com"}
+];
 
 /* RENDER */
 function render(list){
     grid.innerHTML="";
+    let favs=getFavs();
+
     list.forEach(g=>{
         let c=document.createElement("div");
         c.className="card";
 
         c.innerHTML=`
-            <img src="${g.image || 'https://picsum.photos/300?random='+Math.random()}">
+            <img src="https://picsum.photos/300?random=${Math.random()}">
             <div class="title">${g.name}</div>
+            <div class="fav">${favs.includes(g.name)?"⭐":"☆"}</div>
         `;
 
         c.onclick=()=>openGame(g);
+        c.querySelector(".fav").onclick=(e)=>toggleFav(e,g.name);
+
         grid.appendChild(c);
     });
 }
 
-/* OPEN */
+/* GAME */
 function openGame(g){
     frame.src=g.url;
     title.innerText=g.name;
@@ -280,38 +307,23 @@ function closeGame(){
     frame.src="";
 }
 
-/* 🔤 OLD STYLE A-Z TOGGLE */
-function toggleSort(){
-    if(sort === "asc"){
-        sort = "desc";
-        document.getElementById("sortBtn").innerText = "Z-A";
-    } else {
-        sort = "asc";
-        document.getElementById("sortBtn").innerText = "A-Z";
-    }
-
-    games.sort((a,b)=>{
-        return sort === "asc"
-        ? a.name.localeCompare(b.name)
-        : b.name.localeCompare(a.name);
-    });
-
-    render(games);
-}
-
 /* SEARCH */
-document.getElementById("search").addEventListener("input",e=>{
+search.addEventListener("input",e=>{
     let v=e.target.value.toLowerCase();
     render(games.filter(g=>g.name.toLowerCase().includes(v)));
 });
 
-/* LOAD */
-fetch("games.json")
-.then(r=>r.json())
-.then(d=>{
-    games=d;
-    render(games);
-});
+/* STARS */
+for(let i=0;i<120;i++){
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    bg.appendChild(s);
+}
+
+/* INIT */
+render(games);
 </script>
 
 </body>
