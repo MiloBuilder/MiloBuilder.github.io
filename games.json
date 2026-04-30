@@ -463,5 +463,10 @@
     "name": "Sandbox City",
     "url": "https://crazygames.cdn.msnfun.com/9ncn80572ncc/v9/index.html?msstart_sdk_init=eyJwYXJlbnRPcmlnaW4iOiJodHRwczovL3d3dy5tc24uY29tIiwiY2xpZW50SWQiOiIxMzZDNzFDMjQ2QjU2MDI5MzNGMDY2RkM0N0UxNjFCNCIsImxvY2FsZSI6ImVuLXVzIiwiZW50cnlQb2ludElkIjoiIiwic3dpdGNoR2FtZVBheWxvYWQiOnsic3dpdGNoZWRUbyI6IjluY244MDU3Mm5jYyIsInZhbHVlIjp7fX19",
     "image": "https://crazygames.cdn.msnfun.com/9ncn80572ncc/v9/logo.png"
+  },
+  {
+    "name": "Plague Inc",
+    "url": "https://truffled.lol/games/PlagueInc/index.html",
+    "image": "https://play.google.com/store/apps/details?id=com.miniclip.plagueinc"
   }
 ]
