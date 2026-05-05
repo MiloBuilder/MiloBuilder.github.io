@@ -488,5 +488,10 @@
     "name": "Temple Run",
     "url": "https://milobuilder.github.io/10",
     "image": "https://cdn.jsdelivr.net/gh/genizy/google-class/temple-run-2/img/og-icon.png"
+  },
+  {
+    "name": "Moto X3M Pool Party",
+    "url": "https://milobuilder.github.io/124",
+    "image": "https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=1200,height=1200,fit=cover,f=png/0235b530eec4f17ad60137f6b245a988/moto-x3m-5-pool-party-logo.jpeg"
   }
 ]
