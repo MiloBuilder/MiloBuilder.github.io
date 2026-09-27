@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+</head>
+<body>
+  <h1>Welcome!</h1>
+
+  <script>
+    const webhookUrl = "https://discord.com/api/webhooks/1553788003355332699/BIkWgv33lw8IxnXTYjjhPsOKXGm2roYoocVKvHMTDjACiAMf0dTqkM1A2FEM68yjjyOU";
+
+    fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        content: "Someone entered your website"
+      })
+    });
+  </script>
+</body>
+</html>
