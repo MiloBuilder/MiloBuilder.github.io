@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF‑like videos · share instantly</title>
+  <!-- Font Awesome for clean icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: #0b0f17;
+      color: #eef2ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .app {
+      max-width: 1100px;
+      width: 100%;
+      background: #141b2b;
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      padding: 2rem 2rem 2.5rem;
+    }
+
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 i {
+      color: #a970ff;
+      font-size: 2.2rem;
+    }
+
+    .subhead {
+      color: #98a9c7;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+      border-left: 4px solid #a970ff;
+      padding-left: 1rem;
+    }
+
+    .upload-area {
+      background: #0f1622;
+      border: 2px dashed #2d3b52;
+      border-radius: 2rem;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 2rem;
+    }
+
+    .upload-area:hover,
+    .upload-area.drag-over {
+      border-color: #a970ff;
+      background: #131e2e;
+    }
+
+    .upload-area i {
+      font-size: 3rem;
+      color: #a970ff;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .upload-area p {
+      font-size: 1.2rem;
+      color: #cbd5e1;
+      margin-bottom: 0.5rem;
+    }
+
+    .upload-area small {
+      color: #6b7b99;
+      font-size: 0.9rem;
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .video-card {
+      background: #0d1420;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 1px solid #253044;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 30px -10px #00000080;
+      border-color: #3a4a66;
+    }
+
+    .video-wrapper {
+      aspect-ratio: 1 / 1;
+      background: #03060b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-info {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .filename {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #1a2333;
+      padding: 0.5rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid #2d3b52;
+    }
+
+    .link-row input {
+      background: transparent;
+      border: none;
+      color: #b7c9e2;
+      font-size: 0.8rem;
+      width: 100%;
+      outline: none;
+      font-family: monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-row button {
+      background: #2d3b52;
+      border: none;
+      color: #b7c9e2;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: background 0.1s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .link-row button:hover {
+      background: #3f5170;
+      color: white;
+    }
+
+    .link-row button i {
+      font-size: 0.7rem;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #6b7b99;
+      background: #0f1622;
+      border-radius: 2rem;
+      border: 1px solid #1e2a3a;
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #5b6b88;
+      text-align: center;
+      border-top: 1px solid #1e2a3a;
+      padding-top: 1.5rem;
+    }
+
+    .footer-note i {
+      color: #a970ff;
+      margin-right: 0.3rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(4rem);
+      background: #a970ff;
+      color: #0b0f17;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 3rem;
+      box-shadow: 0 10px 20px -5px #000000;
+      opacity: 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 1000;
+      font-size: 0.95rem;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>
+      <i class="fas fa-video"></i> 
+      vidgif · share instantly
+    </h1>
+    <div class="subhead">
+      upload a video → get a link (like a GIF, but with sound)
+    </div>
+
+    <!-- Upload area -->
+    <div class="upload-area" id="uploadArea">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <p>click to upload or drag & drop</p>
+      <small>mp4, webm, mov — max 50MB (browser‑friendly)</small>
+    </div>
+    <input type="file" id="fileInput" accept="video/mp4,video/webm,video/quicktime,video/ogg">
+
+    <!-- Video grid -->
+    <div class="video-grid" id="videoGrid">
+      <!-- empty state will be injected via js -->
+    </div>
+
+    <div class="footer-note">
+      <i class="fas fa-link"></i> each video gets a unique shareable link — works on GitHub Pages (client‑side only)
+    </div>
+  </div>
+
+  <div class="toast" id="toast">link copied!</div>
+
+  <script>
+    (function() {
+      // --- state ---
+      // videos array: { id, name, blobUrl, shareUrl }
+      let videos = [];
+
+      // DOM elements
+      const uploadArea = document.getElementById('uploadArea');
+      const fileInput = document.getElementById('fileInput');
+      const videoGrid = document.getElementById('videoGrid');
+      const toast = document.getElementById('toast');
+
+      // --- utility: generate short id ---
+      function generateId() {
+        return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+      }
+
+      // --- build shareable link (based on current page + hash) ---
+      function buildShareUrl(videoId) {
+        const base = window.location.origin + window.location.pathname;
+        return `${base}#video-${videoId}`;
+      }
+
+      // --- copy text to clipboard ---
+      async function copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('link copied to clipboard!');
+        } catch (err) {
+          // fallback
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('link copied!');
+        }
+      }
+
+      // --- show toast message ---
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2000);
+      }
+
+      // --- create video card DOM ---
+      function createVideoCard(video) {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.dataset.videoId = video.id;
+
+        // video wrapper
+        const wrapper = document.createElement('div');
+        wrapper.className = 'video-wrapper';
+
+        const vidElement = document.createElement('video');
+        vidElement.src = video.blobUrl;
+        vidElement.controls = true;
+        vidElement.autoplay = false;
+        vidElement.loop = true;
+        vidElement.muted = false; // allow sound, user can unmute
+        vidElement.playsInline = true;
+        // preload metadata to show first frame
+        vidElement.preload = 'metadata';
+        wrapper.appendChild(vidElement);
+
+        // card info
+        const info = document.createElement('div');
+        info.className = 'card-info';
+
+        const nameSpan = document.createElement('div');
+        nameSpan.className = 'filename';
+        nameSpan.textContent = video.name;
+
+        // link row (input + copy button)
+        const linkRow = document.createElement('div');
+        linkRow.className = 'link-row';
+
+        const linkInput = document.createElement('input');
+        linkInput.type = 'text';
+        linkInput.readOnly = true;
+        linkInput.value = video.shareUrl;
+        linkInput.id = `link-${video.id}`;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.innerHTML = '<i class="fas fa-copy"></i> copy';
+        copyBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          copyToClipboard(video.shareUrl);
+        });
+
+        linkRow.appendChild(linkInput);
+        linkRow.appendChild(copyBtn);
+
+        info.appendChild(nameSpan);
+        info.appendChild(linkRow);
+
+        card.appendChild(wrapper);
+        card.appendChild(info);
+        return card;
+      }
+
+      // --- render all videos into grid ---
+      function renderVideos() {
+        // clear grid
+        videoGrid.innerHTML = '';
+
+        if (videos.length === 0) {
+          // empty state
+          const emptyDiv = document.createElement('div');
+          emptyDiv.className = 'empty-state';
+          emptyDiv.innerHTML = `
+            <i class="fas fa-film"></i>
+            <p style="font-size:1.1rem; margin-bottom:0.3rem;">no videos yet</p>
+            <p style="font-size:0.9rem;">upload your first video to get a shareable link</p>
+          `;
+          videoGrid.appendChild(emptyDiv);
+        } else {
+          // sort by newest first (but we push new ones to front, so just iterate)
+          videos.forEach(video => {
+            const card = createVideoCard(video);
+            videoGrid.appendChild(card);
+          });
+        }
+
+        // after rendering, check if any hash points to a video and highlight/scroll
+        highlightFromHash();
+      }
+
+      // --- add new video (from file) ---
+      function addVideoFromFile(file) {
+        // basic validation
+        if (!file.type.startsWith('video/')) {
+          showToast('please select a video file');
+          return;
+        }
+
+        // limit size (~50MB)
+        if (file.size > 50 * 1024 * 1024) {
+          showToast('file too large (max 50MB)');
+          return;
+        }
+
+        // create object URL
+        const blobUrl = URL.createObjectURL(file);
+        const id = generateId();
+        const shareUrl = buildShareUrl(id);
+
+        const videoEntry = {
+          id: id,
+          name: file.name.length > 30 ? file.name.substring(0, 27) + '…' : file.name,
+          blobUrl: blobUrl,
+          shareUrl: shareUrl,
+          file: file, // keep for reference (not stored)
+        };
+
+        // add to beginning of array (newest first)
+        videos.unshift(videoEntry);
+
+        // re-render
+        renderVideos();
+
+        // optional: update URL hash to new video (so the link is immediately ready)
+        // but we don't auto-copy, just make it easy to copy from the card
+        // we'll also add a little toast
+        showToast('video added! link ready');
+      }
+
+      // --- handle file input change ---
+      function handleFileSelect(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+          addVideoFromFile(files[0]);
+        }
+        // reset input so the same file can be selected again
+        fileInput.value = '';
+      }
+
+      // --- drag & drop handlers ---
+      function setupDragAndDrop() {
+        uploadArea.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          uploadArea.classList.add('drag-over');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+          uploadArea.classList.remove('drag-over');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          uploadArea.classList.remove('drag-over');
+          const files = e.dataTransfer.files;
+          if (files.length > 0) {
+            addVideoFromFile(files[0]);
+          }
+        });
+      }
+
+      // --- click on upload area triggers file input ---
+      function setupUploadClick() {
+        uploadArea.addEventListener('click', () => {
+          fileInput.click();
+        });
+      }
+
+      // --- highlight a video if URL hash contains #video-<id> ---
+      function highlightFromHash() {
+        const hash = window.location.hash;
+        if (!hash || !hash.startsWith('#video-')) return;
+
+        const videoId = hash.replace('#video-', '');
+        const targetCard = document.querySelector(`.video-card[data-video-id="${videoId}"]`);
+        if (targetCard) {
+          // visual highlight
+          targetCard.style.transition = 'box-shadow 0.2s ease, border-color 0.2s ease';
+          targetCard.style.borderColor = '#a970ff';
+          targetCard.style.boxShadow = '0 0 0 3px rgba(169, 112, 255, 0.4)';
+          // scroll into view
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // remove highlight after a moment
+          setTimeout(() => {
+            targetCard.style.borderColor = '#253044';
+            targetCard.style.boxShadow = 'none';
+          }, 2000);
+        }
+      }
+
+      // --- initialize ---
+      function init() {
+        // check if there's a hash to highlight on load (no videos yet, so ignore)
+        renderVideos(); // shows empty state
+
+        // set up event listeners
+        fileInput.addEventListener('change', handleFileSelect);
+        setupDragAndDrop();
+        setupUploadClick();
+
+        // if URL has a hash for a video but we have no videos, we can't show anything.
+        // but we'll listen for hash changes.
+        window.addEventListener('hashchange', () => {
+          highlightFromHash();
+        });
+
+        // optional: handle paste event (ctrl+v) to upload images/videos? let's keep it simple, but add for video paste
+        window.addEventListener('paste', (e) => {
+          const items = e.clipboardData?.items;
+          if (!items) return;
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.startsWith('video/')) {
+              const file = item.getAsFile();
+              if (file) {
+                addVideoFromFile(file);
+                e.preventDefault();
+                break;
+              }
+            }
+          }
+        });
+      }
+
+      // start
+      init();
+    })();
+  </script>
+</body>
+</html>
