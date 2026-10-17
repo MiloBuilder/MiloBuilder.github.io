@@ -1,5 +1,15 @@
 [
   {
+    "name": "Minecraft",
+    "url": "https://milobuilder.github.io/minecraft",
+    "image": "https://gcdnb.pbrd.co/images/JAawRtbU0qHz.png"
+  },
+  {
+    "name": "Bruno Simon",
+    "url": "https://bruno-simon.com/",
+    "image": "https://gcdnb.pbrd.co/images/EZd_MQWH_O9Y.jpg"
+  },
+  {
     "name": "Snow Rider 3D",
     "url": "https://milobuilder.github.io/Snowrider3d",
     "image": "https://gcdnb.pbrd.co/images/4Dghspk_N8xL.jpg"
@@ -515,4 +525,3 @@
     "image": "https://media.contentapi.ea.com/content/dam/gin/images/2025/07/pvzr-key-art.png.adapt.crop1x1.767p.png"
   }
 ]
-
